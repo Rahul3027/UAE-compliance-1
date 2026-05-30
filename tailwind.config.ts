@@ -6,12 +6,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#020617',
-        panel: '#0f172a',
-        accent: '#22d3ee'
+        bg: '#000000',
+        panel: '#1c1c1e',
+        panelLight: '#2c2c2e',
+        panelLighter: '#3a3a3c',
+        accent: '#dcb24c', // Luxury UAE gold
+        textPrimary: '#f5f5f7',
+        textSecondary: '#86868b',
+        borderLight: 'rgba(255, 255, 255, 0.08)'
       },
-      backgroundImage: {
-        'hero-grid': 'radial-gradient(circle at 1px 1px, rgba(56,189,248,0.15) 1px, transparent 0)'
+      fontFamily: {
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"SF Pro Display"',
+          '"SF Pro Text"',
+          '"Helvetica Neue"',
+          'Helvetica',
+          'Arial',
+          'sans-serif'
+        ]
       }
     }
   },

@@ -1,0 +1,187 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/app/_not-found/page-221ef7203edcd7a2.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/css/bccab8026545fca1.css",
+      "static/chunks/app/layout-f1cf6239f038dfae.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/app/page-0a8b9a7b052e6eac.js"
+    ],
+    "/(platform)/business-rules-explorer/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/494-689d8fe7225b0813.js",
+      "static/chunks/app/(platform)/business-rules-explorer/page-62b5ceb0f9c77937.js"
+    ],
+    "/(platform)/layout": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/878-8ae9e46feff855a3.js",
+      "static/chunks/app/(platform)/layout-29c5bd60ef08f082.js"
+    ],
+    "/(platform)/api-data-flow/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/api-data-flow/page-6ff4ab21f753b509.js"
+    ],
+    "/(platform)/developer-learning-center/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/developer-learning-center/page-aa50e6a5451849bf.js"
+    ],
+    "/(platform)/asp-communication-flow/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/asp-communication-flow/page-22287b140d6af52e.js"
+    ],
+    "/(platform)/error-rejection-simulator/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/app/(platform)/error-rejection-simulator/page-818518670209fb02.js"
+    ],
+    "/(platform)/erp-integration-center/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/erp-integration-center/page-5aec84aa7ad0fe70.js"
+    ],
+    "/(platform)/dashboard/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/878-8ae9e46feff855a3.js",
+      "static/chunks/app/(platform)/dashboard/page-7241fcc03499c944.js"
+    ],
+    "/(platform)/glossary-technical-terms/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/glossary-technical-terms/page-f03c52aa31c42068.js"
+    ],
+    "/(platform)/invoice-lifecycle/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/494-689d8fe7225b0813.js",
+      "static/chunks/app/(platform)/invoice-lifecycle/page-9abd71794adb47f4.js"
+    ],
+    "/(platform)/peppol-5-corner/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/494-689d8fe7225b0813.js",
+      "static/chunks/app/(platform)/peppol-5-corner/page-346b79833f2ef8ae.js"
+    ],
+    "/(platform)/pint-ae-architecture/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/494-689d8fe7225b0813.js",
+      "static/chunks/app/(platform)/pint-ae-architecture/page-2df04384049a80da.js"
+    ],
+    "/(platform)/sandbox-testing-center/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/sandbox-testing-center/page-9854ca07d17e31cf.js"
+    ],
+    "/(platform)/response-status-lifecycle/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/response-status-lifecycle/page-080f7e3d88137d3a.js"
+    ],
+    "/(platform)/tax-logic-visualization/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/494-689d8fe7225b0813.js",
+      "static/chunks/app/(platform)/tax-logic-visualization/page-23a06c946acb780d.js"
+    ],
+    "/(platform)/uae-overview/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/521-b53316ac963015d8.js",
+      "static/chunks/494-689d8fe7225b0813.js",
+      "static/chunks/app/(platform)/uae-overview/page-b70dd88e7d628e76.js"
+    ],
+    "/(platform)/validation-engine-simulator/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/validation-engine-simulator/page-e287efe74587ee0e.js"
+    ],
+    "/(platform)/xml-structure-explorer/page": [
+      "static/chunks/webpack-163a2522e5bd282f.js",
+      "static/chunks/fd9d1056-8fef90fb5a0b2194.js",
+      "static/chunks/117-4140e3c601b33f38.js",
+      "static/chunks/main-app-7023898333865813.js",
+      "static/chunks/369-7c078cf74cd0bad0.js",
+      "static/chunks/app/(platform)/xml-structure-explorer/page-aa279750d67f5903.js"
+    ]
+  }
+}

@@ -2,5 +2,167 @@
 @tailwind components;
 @tailwind utilities;
 
-body { @apply bg-bg text-slate-100 antialiased; }
-.panel { @apply bg-panel/80 border border-cyan-500/20 backdrop-blur rounded-xl; }
+@layer base {
+  :root {
+    --background: 0 0% 0%; /* Pure Black */
+    --foreground: 0 0% 98%;
+    
+    --card: 0 0% 8%; /* Dark Gray */
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 43 74% 61%; /* Luxury Gold: hsl(43, 74%, 61%) #dcb24c */
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 3.8% 46.1%; /* Silver-gray text */
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 43 74% 61%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 43 74% 61%;
+  }
+}
+
+body {
+  background-color: #000000;
+  color: #f5f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Premium Layout Elements */
+.apple-panel {
+  background-color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-panel:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.apple-panel-interactive {
+  background-color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-panel-interactive:hover {
+  background-color: #252528;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.apple-panel-active {
+  background-color: #1c1c1e;
+  border: 1px solid #dcb24c;
+  border-radius: 12px;
+}
+
+/* Buttons */
+.btn-apple-primary {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 980px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-apple-primary:hover {
+  background-color: #f5f5f7;
+  opacity: 0.95;
+}
+
+.btn-apple-secondary {
+  background-color: #2c2c2e;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 980px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.btn-apple-secondary:hover {
+  background-color: #3a3a3c;
+}
+
+/* Badges */
+.badge-apple {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 980px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Text styles matching Apple style guide */
+.apple-h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.021em;
+  color: #f5f5f7;
+}
+
+.apple-h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  color: #f5f5f7;
+}
+
+.apple-h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.014em;
+  color: #f5f5f7;
+}
+
+.apple-body {
+  font-size: 0.9375rem;
+  line-height: 1.47059;
+  font-weight: 400;
+  letter-spacing: -0.009em;
+  color: #86868b;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #2c2c2e;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3c;
+}
