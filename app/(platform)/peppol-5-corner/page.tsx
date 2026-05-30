@@ -5,6 +5,7 @@ import { fiveCornerRoles } from '@/data/compliance-content';
 import { quizzes } from '@/data/quiz-data';
 import { QuizCard } from '@/components/ui/quiz-card';
 import { FlowDiagram } from '@/components/ui/flow-diagram';
+import { CornerModel } from '@/components/ui/corner-model';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function Peppol5Corner() {
@@ -37,10 +38,18 @@ export default function Peppol5Corner() {
         </p>
       </div>
 
-      {/* Interactive Workflow Diagram */}
+      {/* Interactive 5-Corner visual simulation model (added at top) */}
       <div className="space-y-4">
         <h3 className="text-xs font-semibold text-textSecondary uppercase tracking-widest font-mono border-b border-white/[0.06] pb-2">
-          Network Data Flow Simulator
+          5-Corner Live Flow Animator
+        </h3>
+        <CornerModel />
+      </div>
+
+      {/* Interactive Role Inspector */}
+      <div className="space-y-4">
+        <h3 className="text-xs font-semibold text-textSecondary uppercase tracking-widest font-mono border-b border-white/[0.06] pb-2">
+          Role Details & Capabilities Directory
         </h3>
         <p className="text-xs text-textSecondary leading-relaxed">
           Click on any node (C1 through C5) to inspect its specific roles, responsibilities, and technical actions in the e-invoicing transmission process.
@@ -66,7 +75,7 @@ export default function Peppol5Corner() {
               <tr>
                 <td className="p-4 font-medium text-textPrimary">Tax Authority Integration</td>
                 <td className="p-4 text-textSecondary">Authority is offline or receives reports in batch mode later.</td>
-                <td className="p-4 text-textSecondary">Real-time reporting. Corner 5 (FTA) audits the invoice on transmit.</td>
+                <td className="p-4 text-textSecondary text-accent">Real-time reporting. Corner 5 (FTA) audits the invoice on transmit.</td>
               </tr>
               <tr>
                 <td className="p-4 font-medium text-textPrimary">Validation Engine</td>

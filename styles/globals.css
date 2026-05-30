@@ -31,53 +31,83 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 43 74% 61%;
+
+    /* Custom variables for theme switcher */
+    --bg-color: #000000;
+    --panel-color: #1c1c1e;
+    --panel-light: #2c2c2e;
+    --panel-lighter: #3a3a3c;
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-light-hover: rgba(255, 255, 255, 0.16);
+    --btn-primary-bg: #ffffff;
+    --btn-primary-text: #000000;
+    --btn-secondary-bg: #2c2c2e;
+    --btn-secondary-text: #ffffff;
+  }
+
+  .light {
+    --bg-color: #f5f5f7;
+    --panel-color: #ffffff;
+    --panel-light: #f5f5f7;
+    --panel-lighter: #e5e5ea;
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+    --border-light: rgba(0, 0, 0, 0.08);
+    --border-light-hover: rgba(0, 0, 0, 0.16);
+    --btn-primary-bg: #1d1d1f;
+    --btn-primary-text: #ffffff;
+    --btn-secondary-bg: #e5e5ea;
+    --btn-secondary-text: #1d1d1f;
   }
 }
 
 body {
-  background-color: #000000;
-  color: #f5f5f7;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Premium Layout Elements */
 .apple-panel {
-  background-color: #1c1c1e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--panel-color);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .apple-panel:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: var(--border-light-hover);
 }
 
 .apple-panel-interactive {
-  background-color: #1c1c1e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--panel-color);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .apple-panel-interactive:hover {
-  background-color: #252528;
-  border-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--panel-light);
+  border-color: var(--border-light-hover);
   transform: translateY(-2px);
 }
 
 .apple-panel-active {
-  background-color: #1c1c1e;
+  background-color: var(--panel-color);
   border: 1px solid #dcb24c;
   border-radius: 12px;
 }
 
 /* Buttons */
 .btn-apple-primary {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   font-weight: 500;
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
@@ -89,13 +119,12 @@ body {
 }
 
 .btn-apple-primary:hover {
-  background-color: #f5f5f7;
-  opacity: 0.95;
+  opacity: 0.9;
 }
 
 .btn-apple-secondary {
-  background-color: #2c2c2e;
-  color: #ffffff;
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
   font-weight: 500;
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
@@ -103,12 +132,12 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
   transition: all 0.2s ease;
 }
 
 .btn-apple-secondary:hover {
-  background-color: #3a3a3c;
+  background-color: var(--panel-lighter);
 }
 
 /* Badges */
@@ -126,21 +155,24 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   letter-spacing: -0.021em;
-  color: #f5f5f7;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .apple-h2 {
   font-size: 1.75rem;
   font-weight: 600;
   letter-spacing: -0.018em;
-  color: #f5f5f7;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .apple-h3 {
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.014em;
-  color: #f5f5f7;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .apple-body {
@@ -148,7 +180,7 @@ body {
   line-height: 1.47059;
   font-weight: 400;
   letter-spacing: -0.009em;
-  color: #86868b;
+  color: var(--text-secondary);
 }
 
 /* Custom Scrollbar */
@@ -157,12 +189,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #000000;
+  background: var(--bg-color);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2c2c2e;
+  background: var(--panel-light);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3c;
+  background: var(--panel-lighter);
 }

@@ -12,7 +12,7 @@ interface QuizCardProps {
 }
 
 export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
-  const { saveQuizScore, quizScores } = useLearningStore();
+  const { saveQuizScore } = useLearningStore();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -58,7 +58,7 @@ export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
   };
 
   if (!questions || questions.length === 0) {
-    return <div className="text-sm text-textSecondary">No quiz available for this module yet.</div>;
+    return <div className="text-sm text-textSecondary font-mono">No quiz available for this module yet.</div>;
   }
 
   return (
@@ -74,7 +74,7 @@ export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
             className="space-y-6"
           >
             {/* Header */}
-            <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+            <div className="flex justify-between items-center border-b border-borderLight pb-3">
               <span className="text-xs uppercase tracking-wider text-accent font-semibold">Compliance Check</span>
               <span className="text-xs text-textSecondary font-mono">
                 {currentIdx + 1} of {questions.length}
@@ -89,7 +89,7 @@ export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
             {/* Options */}
             <div className="space-y-2">
               {currentQuestion.options.map((opt, idx) => {
-                let btnStyle = "border-white/[0.08] hover:bg-white/[0.04]";
+                let btnStyle = "border-borderLight hover:bg-panelLight/40";
                 let icon = null;
 
                 if (isAnswered) {
@@ -100,7 +100,7 @@ export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
                     btnStyle = "border-red-500/30 bg-red-500/10 text-red-400";
                     icon = <X className="w-4 h-4 text-red-400 shrink-0" />;
                   } else {
-                    btnStyle = "border-white/[0.04] opacity-50";
+                    btnStyle = "border-borderLight/30 opacity-50";
                   }
                 } else if (selectedIdx === idx) {
                   btnStyle = "border-accent/40 bg-accent/5 text-textPrimary";
@@ -126,7 +126,7 @@ export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
                 <motion.div
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/[0.02] border border-white/[0.06] p-4 rounded-lg text-xs leading-relaxed text-textSecondary"
+                  className="bg-panelLight/20 border border-borderLight p-4 rounded-lg text-xs leading-relaxed text-textSecondary"
                 >
                   <strong className="text-textPrimary block mb-1">Explanation:</strong>
                   {currentQuestion.explanation}
@@ -165,7 +165,7 @@ export function QuizCard({ moduleId, questions, onComplete }: QuizCardProps) {
             
             <div className="space-y-2">
               <h3 className="text-xl font-semibold text-textPrimary">Quiz Completed!</h3>
-              <p className="text-sm text-textSecondary max-w-sm mx-auto">
+              <p className="text-sm text-textSecondary max-w-sm mx-auto font-sans">
                 You scored <span className="text-accent font-medium">{score}</span> out of <span className="font-medium text-textPrimary">{questions.length}</span> correct.
               </p>
               <p className="text-xs text-accent">

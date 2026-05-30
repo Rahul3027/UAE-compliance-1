@@ -6,14 +6,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#000000',
-        panel: '#1c1c1e',
-        panelLight: '#2c2c2e',
-        panelLighter: '#3a3a3c',
+        bg: 'var(--bg-color)',
+        panel: 'var(--panel-color)',
+        panelLight: 'var(--panel-light)',
+        panelLighter: 'var(--panel-lighter)',
         accent: '#dcb24c', // Luxury UAE gold
-        textPrimary: '#f5f5f7',
-        textSecondary: '#86868b',
-        borderLight: 'rgba(255, 255, 255, 0.08)'
+        textPrimary: 'var(--text-primary)',
+        textSecondary: 'var(--text-secondary)',
+        borderLight: 'var(--border-light)',
+        codeBg: 'var(--code-bg)',
+        codeHeaderBg: 'var(--code-header-bg)',
+        codeText: 'var(--code-text)'
       },
       fontFamily: {
         sans: [
