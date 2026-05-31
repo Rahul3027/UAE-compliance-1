@@ -1,13 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useLearningStore } from '@/hooks/use-learning-store';
-import { uaeTaxCategories } from '@/data/compliance-content';
+import { uaeTaxCategories, omanTaxCategories } from '@/data/compliance-content';
 import { quizzes } from '@/data/quiz-data';
 import { QuizCard } from '@/components/ui/quiz-card';
 import { CheckCircle2, Calculator, ArrowRight } from 'lucide-react';
 
 export default function TaxLogic() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
 
   // Calculator State
@@ -21,27 +21,38 @@ export default function TaxLogic() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('tax-logic-visualization');
+  const isOman = mounted && country === 'om';
+  const taxCategories = isOman ? omanTaxCategories : uaeTaxCategories;
+
+  // Sync default exchange rates and ensure category code is valid when taxCategories changes
+  useEffect(() => {
+    if (mounted) {
+      setExchangeRate(country === 'om' ? 0.3845 : 3.6725);
+      // reset to standard category code to avoid mismatch
+      setCategoryCode('S');
+    }
+  }, [country, mounted]);
 
   // Math variables
-  const category = uaeTaxCategories.find(c => c.code === categoryCode) || uaeTaxCategories[0];
+  const category = taxCategories.find(c => c.code === categoryCode) || taxCategories[0];
   const rate = category.rate / 100;
   
   const txnTaxable = amount;
   const txnTaxAmount = amount * rate;
   const txnTotal = amount + txnTaxAmount;
 
-  const aedTaxable = isForeignCurrency ? amount * exchangeRate : amount;
-  const aedTaxAmount = isForeignCurrency ? txnTaxAmount * exchangeRate : txnTaxAmount;
-  const aedTotal = isForeignCurrency ? txnTotal * exchangeRate : txnTotal;
+  const localTaxable = isForeignCurrency ? amount * exchangeRate : amount;
+  const localTaxAmount = isForeignCurrency ? txnTaxAmount * exchangeRate : txnTaxAmount;
+  const localTotal = isForeignCurrency ? txnTotal * exchangeRate : txnTotal;
 
   return (
     <div className="space-y-12 pb-12">
       {/* Header */}
       <div className="space-y-3">
         <span className="text-[10px] font-mono uppercase tracking-widest text-accent font-semibold">Track 2: Core Concepts</span>
-        <h1 className="apple-h1">UAE VAT & Tax Logic</h1>
+        <h1 className="apple-h1">{isOman ? 'Oman VAT & Tax Logic' : 'UAE VAT & Tax Logic'}</h1>
         <p className="text-sm text-textSecondary max-w-xl leading-relaxed">
-          UAE e-invoices must compute VAT according to strict FTA rules, including specific category codes, exchange rate conversions, and rounding boundaries.
+          {isOman ? 'Oman e-invoices must compute VAT according to strict OTA rules, including specific category codes, exchange rate conversions, and rounding boundaries.' : 'UAE e-invoices must compute VAT according to strict FTA rules, including specific category codes, exchange rate conversions, and rounding boundaries.'}
         </p>
       </div>
 
@@ -51,7 +62,7 @@ export default function TaxLogic() {
           VAT Categories
         </h3>
         <div className="grid sm:grid-cols-2 gap-4">
-          {uaeTaxCategories.map((c) => (
+          {taxCategories.map((c) => (
             <div key={c.code} className="apple-panel p-5 space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-xs font-semibold text-textPrimary">{c.name}</span>
@@ -74,7 +85,7 @@ export default function TaxLogic() {
           Interactive VAT & Currency Auditor
         </h3>
         <p className="text-xs text-textSecondary leading-relaxed">
-          Input an invoice line value and select options to calculate tax results. Observe the mandatory exchange rate audit fields required by the FTA when foreign currencies are used.
+          Input an invoice line value and select options to calculate tax results. Observe the mandatory exchange rate audit fields required by the {isOman ? 'OTA' : 'FTA'} when foreign currencies are used.
         </p>
 
         <div className="grid md:grid-cols-[1fr_1.1fr] gap-6">
@@ -104,7 +115,7 @@ export default function TaxLogic() {
                   onChange={(e) => setCategoryCode(e.target.value)}
                   className="w-full bg-black border border-white/[0.08] rounded-lg p-2 text-xs text-textPrimary font-mono focus:outline-none focus:border-accent"
                 >
-                  {uaeTaxCategories.map(c => (
+                  {taxCategories.map(c => (
                     <option key={c.code} value={c.code}>{c.name} ({c.rate}%)</option>
                   ))}
                 </select>
@@ -124,7 +135,7 @@ export default function TaxLogic() {
               {/* Exchange rate input if checked */}
               {isForeignCurrency && (
                 <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase font-mono text-textSecondary">Central Bank Exchange Rate (to AED)</label>
+                  <label className="text-[10px] uppercase font-mono text-textSecondary">Central Bank Exchange Rate (to {isOman ? 'OMR' : 'AED'})</label>
                   <input
                     type="number"
                     step="0.0001"
@@ -144,7 +155,7 @@ export default function TaxLogic() {
             <div className="space-y-3 font-mono text-[10px]">
               {/* Transaction Currency */}
               <div className="border-b border-white/[0.04] pb-2">
-                <p className="text-textSecondary text-[8px] uppercase tracking-wider">Transaction Totals ({isForeignCurrency ? 'USD' : 'AED'})</p>
+                <p className="text-textSecondary text-[8px] uppercase tracking-wider">Transaction Totals ({isForeignCurrency ? 'USD' : isOman ? 'OMR' : 'AED'})</p>
                 <div className="grid grid-cols-2 gap-2 mt-1.5 text-textPrimary">
                   <span>Taxable: {txnTaxable.toFixed(2)}</span>
                   <span>VAT Rate: {(rate * 100)}%</span>
@@ -153,18 +164,18 @@ export default function TaxLogic() {
                 </div>
               </div>
 
-              {/* AED Audit Sheet (Required for FTA) */}
+              {/* Converted Audit Sheet (Required for FTA/OTA) */}
               {isForeignCurrency && (
                 <div className="space-y-2 pt-1">
                   <div className="flex items-center gap-2 text-accent">
                     <ArrowRight className="w-3.5 h-3.5" />
-                    <span className="text-[9px] uppercase tracking-wider font-semibold">FTA Audit Sheet (AED Converted)</span>
+                    <span className="text-[9px] uppercase tracking-wider font-semibold">{isOman ? 'OTA' : 'FTA'} Audit Sheet ({isOman ? 'OMR' : 'AED'} Converted)</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-1 text-textPrimary/80">
-                    <span>Taxable (AED): {aedTaxable.toFixed(2)}</span>
+                    <span>Taxable ({isOman ? 'OMR' : 'AED'}): {localTaxable.toFixed(2)}</span>
                     <span>Exchange Rate: {exchangeRate.toFixed(4)}</span>
-                    <span className="font-semibold text-accent">Calculated VAT (AED): {aedTaxAmount.toFixed(2)}</span>
-                    <span className="font-semibold">Payable (AED): {aedTotal.toFixed(2)}</span>
+                    <span className="font-semibold text-accent">Calculated VAT ({isOman ? 'OMR' : 'AED'}): {localTaxAmount.toFixed(2)}</span>
+                    <span className="font-semibold">Payable ({isOman ? 'OMR' : 'AED'}): {localTotal.toFixed(LocalTotalDecimalDigits(isOman))}</span>
                   </div>
                 </div>
               )}
@@ -192,11 +203,15 @@ export default function TaxLogic() {
             <CheckCircle2 className="w-5 h-5 text-green-400" />
             <div>
               <p className="text-xs font-semibold text-textPrimary">Module Completed</p>
-              <p className="text-[10px] text-textSecondary">You earned 100 XP for mastering UAE Tax Logic.</p>
+              <p className="text-[10px] text-textSecondary">You earned 100 XP for mastering {isOman ? 'Oman' : 'UAE'} Tax Logic.</p>
             </div>
           </div>
         </div>
       )}
     </div>
   );
+}
+
+function LocalTotalDecimalDigits(isOman: boolean) {
+  return isOman ? 3 : 2;
 }

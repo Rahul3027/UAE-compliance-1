@@ -5,7 +5,7 @@ import { CodeViewer } from '@/components/ui/code-viewer';
 import { CheckCircle2, FileCode } from 'lucide-react';
 
 export default function XmlStructureExplorer() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -16,6 +16,7 @@ export default function XmlStructureExplorer() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('xml-structure-explorer');
+  const isOman = mounted && country === 'om';
 
   const xmlSegments = [
     {
@@ -32,10 +33,10 @@ export default function XmlStructureExplorer() {
       id: 'seg-2',
       title: '2. Customization & Profile IDs',
       range: 'Lines 7-9',
-      description: 'Crucial routing parameters. The CustomizationID declares that the XML follows the UAE PEPPOL PINT specification, and the ProfileID maps it to standard billing processes.',
+      description: `Crucial routing parameters. The CustomizationID declares that the XML follows the ${isOman ? 'Oman' : 'UAE'} PEPPOL PINT specification, and the ProfileID maps it to standard billing processes.`,
       businessTerm: 'CustomizationID (BT-24), ProfileID (BT-23)',
-      schematronRule: 'CustomizationID must match "urn:peppol:pint:billing-ae:1.0"',
-      codeSnippet: `<cbc:CustomizationID>urn:peppol:pint:billing-ae:1.0</cbc:CustomizationID>
+      schematronRule: `CustomizationID must match "urn:peppol:pint:billing-${isOman ? 'om' : 'ae'}:1.0"`,
+      codeSnippet: `<cbc:CustomizationID>urn:peppol:pint:billing-${isOman ? 'om' : 'ae'}:1.0</cbc:CustomizationID>
 <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>`
     },
     {
@@ -53,23 +54,29 @@ export default function XmlStructureExplorer() {
       id: 'seg-4',
       title: '4. Supplier Information (C1)',
       range: 'Lines 15-32',
-      description: 'Identifies the seller (Supplier) including registration name, physical address, country code, and their 15-digit UAE Tax Registration Number (TRN).',
-      businessTerm: 'Seller Registration Name (BT-27), Seller Address, Seller TRN (BT-31 / UAE-R-001)',
-      schematronRule: 'UAE-R-002: TRN must contain exactly 15 digits',
+      description: isOman 
+        ? 'Identifies the seller (Supplier) including registration name, physical address, country code, and their 10-digit Oman VAT Identification Number (VATIN).'
+        : 'Identifies the seller (Supplier) including registration name, physical address, country code, and their 15-digit UAE Tax Registration Number (TRN).',
+      businessTerm: isOman 
+        ? 'Seller Registration Name (BT-27), Seller Address, Seller VATIN (BT-31 / OM-R-001)'
+        : 'Seller Registration Name (BT-27), Seller Address, Seller TRN (BT-31 / UAE-R-001)',
+      schematronRule: isOman 
+        ? 'OM-R-002: VATIN must follow Omani format: prefix "OM" followed by exactly 10 digits'
+        : 'UAE-R-002: TRN must contain exactly 15 digits',
       codeSnippet: `<cac:AccountingSupplierParty>
     <cac:Party>
         <cac:PartyName>
-            <cbc:Name>Al-Desert Tech Solutions LLC</cbc:Name>
+            <cbc:Name>${isOman ? 'Mazoon Trade & Logistics SAOC' : 'Al-Desert Tech Solutions LLC'}</cbc:Name>
         </cac:PartyName>
         <cac:PostalAddress>
-            <cbc:StreetName>Sheikh Zayed Road, Floor 14</cbc:StreetName>
-            <cbc:CityName>Dubai</cbc:CityName>
+            <cbc:StreetName>${isOman ? 'Sultan Qaboos Street, Muscat' : 'Sheikh Zayed Road, Floor 14'}</cbc:StreetName>
+            <cbc:CityName>${isOman ? 'Muscat' : 'Dubai'}</cbc:CityName>
             <cac:Country>
-                <cbc:IdentificationCode>AE</cbc:IdentificationCode>
+                <cbc:IdentificationCode>${isOman ? 'OM' : 'AE'}</cbc:IdentificationCode>
             </cac:Country>
         </cac:PostalAddress>
         <cac:PartyTaxScheme>
-            <cbc:CompanyID>100234567800003</cbc:CompanyID>
+            <cbc:CompanyID>${isOman ? 'OM1234567890' : '100234567800003'}</cbc:CompanyID>
             <cac:TaxScheme>
                 <cbc:ID>VAT</cbc:ID>
             </cac:TaxScheme>
@@ -81,22 +88,26 @@ export default function XmlStructureExplorer() {
       id: 'seg-5',
       title: '5. Buyer Information (C4)',
       range: 'Lines 34-51',
-      description: 'Identifies the customer (Buyer) including registration name, address, and their UAE TRN. If B2C (simplified), the buyer TRN block is omitted.',
-      businessTerm: 'Buyer Name (BT-44), Buyer TRN (BT-48)',
+      description: isOman 
+        ? 'Identifies the customer (Buyer) including registration name, address, and their Oman VATIN. If B2C (simplified), the buyer VATIN block is omitted.'
+        : 'Identifies the customer (Buyer) including registration name, address, and their UAE TRN. If B2C (simplified), the buyer TRN block is omitted.',
+      businessTerm: isOman 
+        ? 'Buyer Name (BT-44), Buyer VATIN (BT-48)'
+        : 'Buyer Name (BT-44), Buyer TRN (BT-48)',
       codeSnippet: `<cac:AccountingCustomerParty>
     <cac:Party>
         <cac:PartyName>
-            <cbc:Name>Gulf Retail Enterprises PJSC</cbc:Name>
+            <cbc:Name>${isOman ? 'Salalah Trading Enterprises LLC' : 'Gulf Retail Enterprises PJSC'}</cbc:Name>
         </cac:PartyName>
         <cac:PostalAddress>
-            <cbc:StreetName>Corniche Road, Block B</cbc:StreetName>
-            <cbc:CityName>Abu Dhabi</cbc:CityName>
+            <cbc:StreetName>${isOman ? 'Al-Ribat Street, Salalah' : 'Corniche Road, Block B'}</cbc:StreetName>
+            <cbc:CityName>${isOman ? 'Salalah' : 'Abu Dhabi'}</cbc:CityName>
             <cac:Country>
-                <cbc:IdentificationCode>AE</cbc:IdentificationCode>
+                <cbc:IdentificationCode>${isOman ? 'OM' : 'AE'}</cbc:IdentificationCode>
             </cac:Country>
         </cac:PostalAddress>
         <cac:PartyTaxScheme>
-            <cbc:CompanyID>100876543200003</cbc:CompanyID>
+            <cbc:CompanyID>${isOman ? 'OM9876543210' : '100876543200003'}</cbc:CompanyID>
             <cac:TaxScheme>
                 <cbc:ID>VAT</cbc:ID>
             </cac:TaxScheme>
@@ -110,7 +121,9 @@ export default function XmlStructureExplorer() {
       range: 'Lines 53-68',
       description: 'Declares calculated tax amount summaries. Contains subtotals split by Tax Category Code (e.g. S for Standard 5% VAT) and the taxable basis values.',
       businessTerm: 'Invoice Tax Amount (BT-110), Tax Category Code (BT-95), VAT rate percent (BT-96)',
-      schematronRule: 'UAE-R-004: Standard VAT (S) must have percent exactly equal to 5',
+      schematronRule: isOman 
+        ? 'OM-R-004: Standard VAT (S) must have percent exactly equal to 5'
+        : 'UAE-R-004: Standard VAT (S) must have percent exactly equal to 5',
       codeSnippet: `<cac:TaxTotal>
     <cbc:TaxAmount>150.00</cbc:TaxAmount>
     <cac:TaxSubtotal>
@@ -138,7 +151,7 @@ export default function XmlStructureExplorer() {
     <cbc:TaxExclusiveAmount>3000.00</cbc:TaxExclusiveAmount>
     <cbc:TaxInclusiveAmount>3150.00</cbc:TaxInclusiveAmount>
     <cbc:PayableAmount>3150.00</cbc:PayableAmount>
-</cac:LegalMonetaryTotal>`
+  </cac:LegalMonetaryTotal>`
     },
     {
       id: 'seg-8',

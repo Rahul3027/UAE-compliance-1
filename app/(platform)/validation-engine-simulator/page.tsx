@@ -5,7 +5,7 @@ import { CheckCircle2, Play, AlertTriangle, Check, Code } from 'lucide-react';
 import { xmlSamples } from '@/data/xml-samples';
 
 export default function ValidationSimulator() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
   const [xmlContent, setXmlContent] = useState('');
   
@@ -13,11 +13,37 @@ export default function ValidationSimulator() {
   const [isValidating, setIsValidating] = useState(false);
   const [results, setResults] = useState<{ id: string; name: string; status: 'pass' | 'fail'; msg: string }[] | null>(null);
 
+  const isOman = mounted && country === 'om';
+
+  // Get active base XML template
+  const getBaseTemplate = () => {
+    const baseXml = xmlSamples[0].code;
+    if (country === 'om') {
+      return baseXml
+        .replaceAll('urn:peppol:pint:billing-ae:1.0', 'urn:peppol:pint:billing-om:1.0')
+        .replaceAll('<cbc:DocumentCurrencyCode>AED</cbc:DocumentCurrencyCode>', '<cbc:DocumentCurrencyCode>OMR</cbc:DocumentCurrencyCode>')
+        .replaceAll('100234567800003', 'OM1234567890')
+        .replaceAll('100876543200003', 'OM9876543210')
+        .replaceAll('<cbc:IdentificationCode>AE</cbc:IdentificationCode>', '<cbc:IdentificationCode>OM</cbc:IdentificationCode>')
+        .replaceAll('Al-Desert Tech Solutions LLC', 'Mazoon Trade & Logistics SAOC')
+        .replaceAll('Gulf Retail Enterprises PJSC', 'Salalah Trading Enterprises LLC')
+        .replaceAll('Dubai', 'Muscat')
+        .replaceAll('Abu Dhabi', 'Salalah');
+    }
+    return baseXml;
+  };
+
   useEffect(() => {
     setMounted(true);
-    // Pre-populate with standard sample
-    setXmlContent(xmlSamples[0].code);
   }, []);
+
+  // Sync XML editor content when country changes
+  useEffect(() => {
+    if (mounted) {
+      setXmlContent(getBaseTemplate());
+      setResults(null);
+    }
+  }, [country, mounted]);
 
   const isCompleted = mounted && completedModules.includes('validation-engine-simulator');
 
@@ -29,34 +55,40 @@ export default function ValidationSimulator() {
       const assertions: { id: string; name: string; status: 'pass' | 'fail'; msg: string }[] = [];
 
       // 1. CustomizationID Check
-      const hasUaeCustomization = xmlContent.includes('urn:peppol:pint:billing-ae:1.0');
+      const targetCustomization = isOman ? 'urn:peppol:pint:billing-om:1.0' : 'urn:peppol:pint:billing-ae:1.0';
+      const hasCustomization = xmlContent.includes(targetCustomization);
       assertions.push({
-        id: 'AE-VAL-001',
-        name: 'UAE Customization Specification Match',
-        status: hasUaeCustomization ? 'pass' : 'fail',
-        msg: hasUaeCustomization 
-          ? 'CustomizationID matches UAE PINT billing specifications.' 
-          : 'FATAL: CustomizationID must be exactly "urn:peppol:pint:billing-ae:1.0".'
+        id: isOman ? 'OM-VAL-001' : 'AE-VAL-001',
+        name: isOman ? 'Oman Customization Specification Match' : 'UAE Customization Specification Match',
+        status: hasCustomization ? 'pass' : 'fail',
+        msg: hasCustomization 
+          ? `CustomizationID matches ${isOman ? 'Oman' : 'UAE'} PINT billing specifications.` 
+          : `FATAL: CustomizationID must be exactly "${targetCustomization}".`
       });
 
-      // 2. TRN Length validation (15 digits)
+      // 2. TRN/VATIN Length validation (15 digits for UAE / OM + 10 digits for Oman)
       const supplierPartyMatch = xmlContent.match(/<cac:AccountingSupplierParty>[\s\S]*?<\/cac:AccountingSupplierParty>/);
-      let trnMatch = null;
+      let taxIdMatch = null;
       if (supplierPartyMatch) {
         const companyIdMatch = supplierPartyMatch[0].match(/<cbc:CompanyID>(.*?)<\/cbc:CompanyID>/);
         if (companyIdMatch) {
-          trnMatch = companyIdMatch[1];
+          taxIdMatch = companyIdMatch[1];
         }
       }
 
-      const isTrnValid = trnMatch && /^\d{15}$/.test(trnMatch);
+      const isTaxIdValid = isOman 
+        ? (taxIdMatch && /^OM\d{10}$/.test(taxIdMatch)) 
+        : (taxIdMatch && /^\d{15}$/.test(taxIdMatch));
+
       assertions.push({
-        id: 'UAE-R-002',
-        name: 'Supplier Tax Registration Number (TRN) Format',
-        status: isTrnValid ? 'pass' : 'fail',
-        msg: isTrnValid
-          ? `Supplier TRN "${trnMatch}" contains exactly 15 digits.`
-          : `FATAL: TRN must be exactly 15 digits. Found: "${trnMatch || 'None'}"`
+        id: isOman ? 'OM-R-002' : 'UAE-R-002',
+        name: isOman ? 'Supplier VAT Identification Number (VATIN) Format' : 'Supplier Tax Registration Number (TRN) Format',
+        status: isTaxIdValid ? 'pass' : 'fail',
+        msg: isTaxIdValid
+          ? `Supplier ${isOman ? 'VATIN' : 'TRN'} "${taxIdMatch}" matches regional format requirements.`
+          : isOman
+            ? `FATAL: VATIN must start with "OM" followed by 10 digits. Found: "${taxIdMatch || 'None'}"`
+            : `FATAL: TRN must be exactly 15 digits. Found: "${taxIdMatch || 'None'}"`
       });
 
       // 3. InvoiceTypeCode validation (380, 381, 388, 480)
@@ -64,25 +96,26 @@ export default function ValidationSimulator() {
       const typeCode = typeCodeMatch ? typeCodeMatch[1] : '';
       const isTypeCodeValid = ['380', '381', '388', '480'].includes(typeCode);
       assertions.push({
-        id: 'UAE-R-008',
+        id: isOman ? 'OM-R-008' : 'UAE-R-008',
         name: 'UBL Document Type Code validation',
         status: isTypeCodeValid ? 'pass' : 'fail',
         msg: isTypeCodeValid
-          ? `Document Type code "${typeCode}" is supported in the UAE.`
+          ? `Document Type code "${typeCode}" is supported regional code.`
           : `FATAL: Document Type code "${typeCode || 'None'}" is unsupported. Use 380, 381, 388, or 480.`
       });
 
       // 4. Currency check
       const currencyMatch = xmlContent.match(/<cbc:DocumentCurrencyCode>(.*?)<\/cbc:DocumentCurrencyCode>/);
       const currency = currencyMatch ? currencyMatch[1] : '';
-      const isCurrencyValid = currency === 'AED' || xmlContent.includes('<cbc:TaxCurrencyCode>AED</cbc:TaxCurrencyCode>');
+      const targetCurrency = isOman ? 'OMR' : 'AED';
+      const isCurrencyValid = currency === targetCurrency || xmlContent.includes(`<cbc:TaxCurrencyCode>${targetCurrency}</cbc:TaxCurrencyCode>`);
       assertions.push({
-        id: 'UAE-R-003',
-        name: 'Mandatory UAE Dirham (AED) Reporting',
+        id: isOman ? 'OM-R-003' : 'UAE-R-003',
+        name: isOman ? 'Mandatory Omani Rial (OMR) Reporting' : 'Mandatory UAE Dirham (AED) Reporting',
         status: isCurrencyValid ? 'pass' : 'fail',
         msg: isCurrencyValid
-          ? `Document reports in standard UAE currency: "${currency || 'AED'}".`
-          : 'FATAL: The invoice must report in AED or include a TaxCurrencyCode converting foreign totals to AED.'
+          ? `Document reports in standard regional currency: "${currency || targetCurrency}".`
+          : `FATAL: The invoice must report in ${targetCurrency} or include a TaxCurrencyCode converting foreign totals to ${targetCurrency}.`
       });
 
       setResults(assertions);
@@ -97,15 +130,18 @@ export default function ValidationSimulator() {
   };
 
   const loadBadTrnTemplate = () => {
-    // Modify the TRN in standard invoice to be short
-    const modified = xmlSamples[0].code.replace('100234567800003', '1002345');
+    const template = getBaseTemplate();
+    const badId = isOman ? 'OM12345' : '1002345';
+    const originalId = isOman ? 'OM1234567890' : '100234567800003';
+    const modified = template.replace(originalId, badId);
     setXmlContent(modified);
     setResults(null);
   };
 
   const loadBadCustomizationTemplate = () => {
-    // Modify CustomizationID to match EU specifications
-    const modified = xmlSamples[0].code.replace('urn:peppol:pint:billing-ae:1.0', 'urn:peppol:pint:billing-eu:1.0');
+    const template = getBaseTemplate();
+    const targetCustomization = isOman ? 'urn:peppol:pint:billing-om:1.0' : 'urn:peppol:pint:billing-ae:1.0';
+    const modified = template.replace(targetCustomization, 'urn:peppol:pint:billing-eu:1.0');
     setXmlContent(modified);
     setResults(null);
   };
@@ -117,14 +153,14 @@ export default function ValidationSimulator() {
         <span className="text-[10px] font-mono uppercase tracking-widest text-accent font-semibold">Track 4: Hands-On Practice</span>
         <h1 className="apple-h1">Validation Engine Simulator</h1>
         <p className="text-sm text-textSecondary max-w-xl leading-relaxed">
-          Test XML payloads against UAE Schematron rules. Paste your own UBL invoice XML or load templates with intentional errors to see the validator block delivery.
+          Test XML payloads against {isOman ? 'Oman' : 'UAE'} Schematron rules. Paste your own UBL invoice XML or load templates with intentional errors to see the validator block delivery.
         </p>
       </div>
 
       {/* Template Quickloaders */}
       <div className="flex flex-wrap gap-2">
         <button
-          onClick={() => { setXmlContent(xmlSamples[0].code); setResults(null); }}
+          onClick={() => { setXmlContent(getBaseTemplate()); setResults(null); }}
           className="btn-apple-secondary text-[10px] py-1.5"
         >
           Load Standard Invoice
@@ -133,7 +169,7 @@ export default function ValidationSimulator() {
           onClick={loadBadTrnTemplate}
           className="btn-apple-secondary text-[10px] py-1.5 text-red-400 border-red-500/20"
         >
-          Load Invalid TRN (Failure)
+          Load Invalid {isOman ? 'VATIN' : 'TRN'} (Failure)
         </button>
         <button
           onClick={loadBadCustomizationTemplate}
@@ -182,7 +218,7 @@ export default function ValidationSimulator() {
 
             {!isValidating && results === null && (
               <p className="text-xs text-textSecondary leading-relaxed text-center py-12">
-                Click "Validate XML" to audit the editor contents against UAE compliance constraints.
+                Click "Validate XML" to audit the editor contents against {isOman ? 'Oman' : 'UAE'} compliance constraints.
               </p>
             )}
 
@@ -209,7 +245,7 @@ export default function ValidationSimulator() {
 
                 {results.every(r => r.status === 'pass') ? (
                   <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-400 rounded-lg text-center text-xs font-semibold">
-                    Success: Invoice matches UAE compliance requirements!
+                    Success: Invoice matches {isOman ? 'Oman' : 'UAE'} compliance requirements!
                   </div>
                 ) : (
                   <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-center text-xs font-semibold">

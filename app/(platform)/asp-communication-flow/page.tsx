@@ -5,7 +5,7 @@ import { CheckCircle2, Globe, Search, Play, ArrowRight, ShieldCheck, RefreshCw }
 import { motion } from 'framer-motion';
 
 export default function AspCommunicationFlow() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
 
   // Network Routing Simulation State
@@ -17,11 +17,22 @@ export default function AspCommunicationFlow() {
     setMounted(true);
   }, []);
 
+  const isOman = mounted && country === 'om';
+
+  // Sync buyer ID default when country changes
+  useEffect(() => {
+    if (mounted) {
+      setBuyerTrn(country === 'om' ? 'OM9876543210' : '100876543200003');
+      setRoutingState('idle');
+      setLogMsgs([]);
+    }
+  }, [country, mounted]);
+
   const isCompleted = mounted && completedModules.includes('asp-communication-flow');
 
   const startRouting = () => {
     setRoutingState('sml-lookup');
-    setLogMsgs(['Initializing routing resolver...', `Target Buyer TRN: ${buyerTrn}`]);
+    setLogMsgs(['Initializing routing resolver...', `Target Buyer ${isOman ? 'VATIN' : 'TRN'}: ${buyerTrn}`]);
 
     setTimeout(() => {
       setRoutingState('smp-query');
@@ -37,8 +48,8 @@ export default function AspCommunicationFlow() {
       setRoutingState('as4-send');
       setLogMsgs((prev) => [
         ...prev,
-        'SMP confirmed Receiver is registered for: PEPPOL PINT AE Invoice v1.0.',
-        'Recipient AP Endpoint resolved: https://ap.gulfretail.ae/as4',
+        `SMP confirmed Receiver is registered for: PEPPOL PINT ${isOman ? 'OM' : 'AE'} Invoice v1.0.`,
+        `Recipient AP Endpoint resolved: https://ap.${isOman ? 'salalahtrading.om' : 'gulfretail.ae'}/as4`,
         'Establishing secure TLS AS4 session with target Access Point...',
         'Sending SOAP Envelope payload with digitally signed digest...'
       ]);
@@ -92,7 +103,7 @@ export default function AspCommunicationFlow() {
 
             <div className="space-y-3">
               <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-mono text-textSecondary">Target Buyer TRN</label>
+                <label className="text-[10px] uppercase font-mono text-textSecondary">Target Buyer {isOman ? 'VATIN' : 'TRN'}</label>
                 <input
                   type="text"
                   disabled={routingState !== 'idle'}

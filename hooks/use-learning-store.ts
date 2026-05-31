@@ -12,9 +12,11 @@ interface LearningState {
   xp: number;
   quizScores: Record<string, QuizResult>;
   theme: 'dark' | 'light';
+  country: 'ae' | 'om';
   completeModule: (id: string, xpGain?: number) => void;
   saveQuizScore: (moduleId: string, score: number, total: number) => void;
   toggleTheme: () => void;
+  setCountry: (country: 'ae' | 'om') => void;
   resetProgress: () => void;
 }
 
@@ -25,6 +27,7 @@ export const useLearningStore = create<LearningState>()(
       xp: 0,
       quizScores: {},
       theme: 'dark',
+      country: 'ae',
       completeModule: (id, xpGain = 100) =>
         set((state) => {
           if (state.completedModules.includes(id)) return {};
@@ -54,6 +57,7 @@ export const useLearningStore = create<LearningState>()(
         set((state) => ({
           theme: state.theme === 'dark' ? 'light' : 'dark',
         })),
+      setCountry: (country) => set({ country }),
       resetProgress: () =>
         set({
           completedModules: [],

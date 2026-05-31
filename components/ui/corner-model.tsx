@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, ChevronRight, ChevronLeft, Database, Server, Building2, Users } from 'lucide-react';
 
+import { useLearningStore } from '@/hooks/use-learning-store';
+
 interface ModelStep {
   id: number;
   title: string;
@@ -55,15 +57,41 @@ const steps: ModelStep[] = [
 ];
 
 export function CornerModel() {
+  const { country } = useLearningStore();
+  const [mounted, setMounted] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const playTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isOman = mounted && country === 'om';
+
+  // Dynamic mapping based on country
+  const dynamicSteps = steps.map(s => {
+    if (isOman) {
+      return {
+        ...s,
+        title: s.title.replaceAll('FTA', 'OTA'),
+        desc: s.desc.replaceAll('Federal Tax Authority', 'Oman Tax Authority').replaceAll('FTA', 'OTA'),
+        dataPayload: s.dataPayload
+          .replaceAll('AED', 'OMR')
+          .replaceAll('supplierTrn', 'supplierVatin')
+          .replaceAll('recipientTrn', 'recipientVatin')
+          .replaceAll('100234567800003', 'OM1234567890')
+          .replaceAll('100876543200003', 'OM9876543210')
+      };
+    }
+    return s;
+  });
 
   // Auto-playing steps loop
   useEffect(() => {
     if (isPlaying) {
       playTimer.current = setInterval(() => {
-        setActiveStep((prev) => (prev < steps.length - 1 ? prev + 1 : 0));
+        setActiveStep((prev) => (prev < dynamicSteps.length - 1 ? prev + 1 : 0));
       }, 5000);
     } else {
       if (playTimer.current) clearInterval(playTimer.current);
@@ -71,10 +99,10 @@ export function CornerModel() {
     return () => {
       if (playTimer.current) clearInterval(playTimer.current);
     };
-  }, [isPlaying]);
+  }, [isPlaying, dynamicSteps.length]);
 
   const handleNext = () => {
-    setActiveStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
+    setActiveStep((prev) => (prev < dynamicSteps.length - 1 ? prev + 1 : prev));
     setIsPlaying(false);
   };
 
@@ -83,7 +111,7 @@ export function CornerModel() {
     setIsPlaying(false);
   };
 
-  const currentStep = steps[activeStep];
+  const currentStep = dynamicSteps[activeStep];
 
   // Helper to determine path animation states
   const getPathStatus = (from: string, to: string) => {
@@ -99,7 +127,9 @@ export function CornerModel() {
           <span className="text-[10px] font-mono uppercase tracking-widest text-accent bg-accent/10 px-2 py-0.5 rounded">
             Visual workflow simulator
           </span>
-          <h3 className="apple-h3 text-base">UAE PEPPOL 5-Corner Routing Model</h3>
+          <h3 className="apple-h3 text-base">
+            {isOman ? 'Oman PEPPOL 5-Corner Routing Model' : 'UAE PEPPOL 5-Corner Routing Model'}
+          </h3>
         </div>
       </div>
 
@@ -226,7 +256,7 @@ export function CornerModel() {
               </div>
               <div className="text-center font-sans">
                 <p className="text-[10px] font-bold text-textPrimary">C5</p>
-                <p className="text-[8px] text-textSecondary font-mono uppercase">FTA Authority</p>
+                <p className="text-[8px] text-textSecondary font-mono uppercase">{isOman ? 'OTA Authority' : 'FTA Authority'}</p>
               </div>
             </div>
           </foreignObject>

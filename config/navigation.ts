@@ -14,7 +14,7 @@ export const navGroups: NavGroup[] = [
     groupLabel: 'Getting Started',
     items: [
       { label: 'Dashboard', href: '/dashboard', moduleId: 'dashboard' },
-      { label: 'UAE E-Invoicing Overview', href: '/uae-overview', moduleId: 'uae-overview' },
+      { label: 'E-Invoicing Overview', href: '/uae-overview', moduleId: 'uae-overview' },
       { label: 'PEPPOL 5-Corner Model', href: '/peppol-5-corner', moduleId: 'peppol-5-corner' },
       { label: 'Glossary & Terms', href: '/glossary-technical-terms', moduleId: 'glossary-technical-terms' }
     ]
@@ -22,9 +22,9 @@ export const navGroups: NavGroup[] = [
   {
     groupLabel: 'Core Concepts',
     items: [
-      { label: 'PINT AE Architecture', href: '/pint-ae-architecture', moduleId: 'pint-ae-architecture' },
+      { label: 'PINT Architecture', href: '/pint-ae-architecture', moduleId: 'pint-ae-architecture' },
       { label: 'E-Invoice Lifecycle', href: '/invoice-lifecycle', moduleId: 'invoice-lifecycle' },
-      { label: 'UAE VAT & Tax Logic', href: '/tax-logic-visualization', moduleId: 'tax-logic-visualization' }
+      { label: 'VAT & Tax Logic', href: '/tax-logic-visualization', moduleId: 'tax-logic-visualization' }
     ]
   },
   {

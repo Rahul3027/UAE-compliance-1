@@ -4,7 +4,7 @@ import { useLearningStore } from '@/hooks/use-learning-store';
 import { CheckCircle2, Database, Table, HelpCircle } from 'lucide-react';
 
 export default function ErpIntegration() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
   const [activeLang, setActiveLang] = useState<'sql' | 'js' | 'python'>('sql');
 
@@ -16,12 +16,25 @@ export default function ErpIntegration() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('erp-integration-center');
+  const isOman = mounted && country === 'om';
 
   const mappings = [
     { db: 'INV_HDR.ID', type: 'VARCHAR', ubl: 'cbc:ID', term: 'Invoice Number (BT-1)', rule: 'Must be unique' },
     { db: 'INV_HDR.DATE_CREATED', type: 'DATE', ubl: 'cbc:IssueDate', term: 'Invoice Issue Date (BT-2)', rule: 'Not in future' },
-    { db: 'SUPPLIER.VAT_REG_NUM', type: 'VARCHAR', ubl: 'cac:PartyTaxScheme/cbc:CompanyID', term: 'Seller TRN (BT-31)', rule: 'Exactly 15 digits' },
-    { db: 'CUSTOMER.VAT_REG_NUM', type: 'VARCHAR', ubl: 'cac:PartyTaxScheme/cbc:CompanyID', term: 'Buyer TRN (BT-48)', rule: 'Omit if B2C' },
+    { 
+      db: 'SUPPLIER.VAT_REG_NUM', 
+      type: 'VARCHAR', 
+      ubl: 'cac:PartyTaxScheme/cbc:CompanyID', 
+      term: isOman ? 'Seller VATIN (BT-31)' : 'Seller TRN (BT-31)', 
+      rule: isOman ? 'OM followed by exactly 10 digits' : 'Exactly 15 digits' 
+    },
+    { 
+      db: 'CUSTOMER.VAT_REG_NUM', 
+      type: 'VARCHAR', 
+      ubl: 'cac:PartyTaxScheme/cbc:CompanyID', 
+      term: isOman ? 'Buyer VATIN (BT-48)' : 'Buyer TRN (BT-48)', 
+      rule: 'Omit if B2C' 
+    },
     { db: 'INV_LINE.EXT_AMT', type: 'DECIMAL', ubl: 'cbc:LineExtensionAmount', term: 'Line extension amount (BT-131)', rule: 'Net line sum' }
   ];
 
@@ -30,27 +43,27 @@ export default function ErpIntegration() {
 SELECT 
   ih.invoice_num AS "cbc:ID",
   ih.issue_date AS "cbc:IssueDate",
-  s.trn_number AS "supplier:CompanyID",
-  c.trn_number AS "customer:CompanyID",
+  s.${isOman ? 'vatin_number' : 'trn_number'} AS "supplier:CompanyID",
+  c.${isOman ? 'vatin_number' : 'trn_number'} AS "customer:CompanyID",
   SUM(il.line_amount) AS "cbc:LineExtensionAmount"
 FROM invoice_headers ih
 JOIN suppliers s ON ih.supplier_id = s.id
 JOIN customers c ON ih.customer_id = c.id
 JOIN invoice_lines il ON il.invoice_id = ih.id
 WHERE ih.id = :invoice_id
-GROUP BY ih.invoice_num, ih.issue_date, s.trn_number, c.trn_number;`,
+GROUP BY ih.invoice_num, ih.issue_date, s.${isOman ? 'vatin_number' : 'trn_number'}, c.${isOman ? 'vatin_number' : 'trn_number'};`,
     
     js: `// Map ERP JSON payloads directly to PEPPOL PINT XML structures
 function mapToPeppol(erpInvoice) {
   return {
-    "cbc:CustomizationID": "urn:peppol:pint:billing-ae:1.0",
+    "cbc:CustomizationID": "urn:peppol:pint:billing-${isOman ? 'om' : 'ae'}:1.0",
     "cbc:ProfileID": "urn:peppol:bis:billing",
     "cbc:ID": erpInvoice.header.invoiceNum,
     "cbc:IssueDate": erpInvoice.header.dateCreated.slice(0, 10),
     "cac:AccountingSupplierParty": {
       "cac:Party": {
         "cac:PartyTaxScheme": {
-          "cbc:CompanyID": erpInvoice.supplier.trn,
+          "cbc:CompanyID": erpInvoice.supplier.${isOman ? 'vatin' : 'trn'},
           "cac:TaxScheme": { "cbc:ID": "VAT" }
         }
       }
@@ -69,7 +82,7 @@ def build_peppol_element(erp_row):
     })
     
     customization = ET.SubElement(root, "{cbc}CustomizationID")
-    customization.text = "urn:peppol:pint:billing-ae:1.0"
+    customization.text = "urn:peppol:pint:billing-${isOman ? 'om' : 'ae'}:1.0"
     
     invoice_id = ET.SubElement(root, "{cbc}ID")
     invoice_id.text = erp_row["invoice_number"]
@@ -100,7 +113,7 @@ def build_peppol_element(erp_row):
                 <th className="p-4 font-semibold text-textPrimary">Source ERP Column</th>
                 <th className="p-4 font-semibold text-textPrimary">Type</th>
                 <th className="p-4 font-semibold text-textPrimary">UBL XML Target Node</th>
-                <th className="p-4 font-semibold text-textPrimary">PINT AE Business Term</th>
+                <th className="p-4 font-semibold text-textPrimary">PINT {isOman ? 'OM' : 'AE'} Business Term</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.04] font-mono text-[10px]">

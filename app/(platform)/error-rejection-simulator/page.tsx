@@ -15,7 +15,7 @@ interface DebugLevel {
 }
 
 export default function ErrorSimulator() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
 
   const [levelIdx, setLevelIdx] = useState(0);
@@ -28,14 +28,25 @@ export default function ErrorSimulator() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('error-rejection-simulator');
+  const isOman = mounted && country === 'om';
+
+  // Sync state when country changes
+  useEffect(() => {
+    if (mounted) {
+      setLevelIdx(0);
+      setSelectedChoice(null);
+      setIsAnswered(false);
+      setShowFinished(false);
+    }
+  }, [country, mounted]);
 
   const levels: DebugLevel[] = [
     {
       id: 1,
-      title: 'Level 1: The Short Company ID',
+      title: isOman ? 'Level 1: The Short Company ID (VATIN)' : 'Level 1: The Short Company ID (TRN)',
       xmlSnippet: `<cac:PartyTaxScheme>
-    <!-- Supplier TRN -->
-    <cbc:CompanyID>10023456</cbc:CompanyID>
+    <!-- Supplier ${isOman ? 'VATIN' : 'TRN'} -->
+    <cbc:CompanyID>${isOman ? 'OM12345' : '1002345'}</cbc:CompanyID>
     <cac:TaxScheme>
         <cbc:ID>VAT</cbc:ID>
     </cac:TaxScheme>
@@ -43,17 +54,23 @@ export default function ErrorSimulator() {
       question: 'Why will the Schematron validator reject this supplier tax scheme block?',
       choices: [
         'The TaxScheme ID must be "TAX" instead of "VAT".',
-        'The CompanyID (TRN) has only 8 digits instead of the mandatory 15 digits (Rule UAE-R-002).',
-        'CompanyID must contain letters representing the Emirate.',
+        isOman 
+          ? 'The CompanyID (VATIN) does not follow Omani format: prefix "OM" followed by exactly 10 digits (Rule OM-R-002).'
+          : 'The CompanyID (TRN) has only 8 digits instead of the mandatory 15 digits (Rule UAE-R-002).',
+        isOman
+          ? 'CompanyID must contain the supplier\'s email address.'
+          : 'CompanyID must contain letters representing the Emirate.',
         'Postal address is missing inside the PartyTaxScheme.'
       ],
       correctIdx: 1,
-      explanation: 'Under UAE compliance rule UAE-R-002, any CompanyID registered under the "VAT" scheme must contain exactly 15 digits.'
+      explanation: isOman
+        ? 'Under Oman compliance rule OM-R-002, any CompanyID registered under the "VAT" scheme must contain exactly 10 digits prefixed with "OM".'
+        : 'Under UAE compliance rule UAE-R-002, any CompanyID registered under the "VAT" scheme must contain exactly 15 digits.'
     },
     {
       id: 2,
       title: 'Level 2: The Mystery Document Code',
-      xmlSnippet: `<cbc:CustomizationID>urn:peppol:pint:billing-ae:1.0</cbc:CustomizationID>
+      xmlSnippet: `<cbc:CustomizationID>urn:peppol:pint:billing-${isOman ? 'om' : 'ae'}:1.0</cbc:CustomizationID>
 <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
 <cbc:ID>INV-1002</cbc:ID>
 <cbc:IssueDate>2026-05-30</cbc:IssueDate>
@@ -62,11 +79,15 @@ export default function ErrorSimulator() {
       choices: [
         'The IssueDate cannot be in the future.',
         'ProfileID must be written in Arabic characters.',
-        'The InvoiceTypeCode "501" is invalid. UAE PEPPOL supports 380, 381, 388, and 480.',
+        isOman
+          ? 'The InvoiceTypeCode "501" is invalid. Oman PEPPOL supports 380, 381, 388, and 480.'
+          : 'The InvoiceTypeCode "501" is invalid. UAE PEPPOL supports 380, 381, 388, and 480.',
         'Invoice ID cannot start with "INV-".'
       ],
       correctIdx: 2,
-      explanation: 'PEPPOL PINT AE Schematrons enforce that the InvoiceTypeCode must match designated codes: 380 (Invoice), 381 (Credit Note), 388 (Simplified), or 480 (Out of Scope).'
+      explanation: isOman
+        ? 'PEPPOL PINT OM Schematrons enforce that the InvoiceTypeCode must match designated codes: 380 (Invoice), 381 (Credit Note), 388 (Simplified), or 480 (Out of Scope).'
+        : 'PEPPOL PINT AE Schematrons enforce that the InvoiceTypeCode must match designated codes: 380 (Invoice), 381 (Credit Note), 388 (Simplified), or 480 (Out of Scope).'
     },
     {
       id: 3,
@@ -86,11 +107,15 @@ export default function ErrorSimulator() {
       choices: [
         'VAT Category "S" (Standard Rate) requires a 5% rate. 5% of 1,000.00 taxable is 50.00, but 10.00 was reported.',
         'TaxableAmount must be represented in USD.',
-        'Percent must be omitted if the amount is less than 50 AED.',
+        isOman
+          ? 'Percent must be omitted if the amount is less than 5 OMR.'
+          : 'Percent must be omitted if the amount is less than 50 AED.',
         'TaxScheme is completely missing from the TaxCategory block.'
       ],
       correctIdx: 0,
-      explanation: 'Rule UAE-R-004 verifies that Standard Rated supplies (Category S) have exactly 5% VAT rate. The reported TaxAmount (10.00) does not match 5% of the TaxableAmount (1,000.00 * 0.05 = 50.00).'
+      explanation: isOman
+        ? 'Rule OM-R-004 verifies that Standard Rated supplies (Category S) have exactly 5% VAT rate. The reported TaxAmount (10.00) does not match 5% of the TaxableAmount (1,000.00 * 0.05 = 50.00).'
+        : 'Rule UAE-R-004 verifies that Standard Rated supplies (Category S) have exactly 5% VAT rate. The reported TaxAmount (10.00) does not match 5% of the TaxableAmount (1,000.00 * 0.05 = 50.00).'
     }
   ];
 

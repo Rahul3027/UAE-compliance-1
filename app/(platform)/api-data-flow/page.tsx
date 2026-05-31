@@ -5,7 +5,7 @@ import { CheckCircle2, Terminal, RefreshCw, Send, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ApiDataFlow() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
@@ -17,6 +17,7 @@ export default function ApiDataFlow() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('api-data-flow');
+  const isOman = mounted && country === 'om';
 
   const steps = [
     {
@@ -26,11 +27,11 @@ export default function ApiDataFlow() {
       code: `// POST /api/v1/invoices
 {
   "invoiceNumber": "INV-2026-9004",
-  "supplierTrn": "100234567800003",
-  "customerTrn": "100876543200003",
+  "${isOman ? 'supplierVatin' : 'supplierTrn'}": "${isOman ? 'OM1234567890' : '100234567800003'}",
+  "${isOman ? 'customerVatin' : 'customerTrn'}": "${isOman ? 'OM9876543210' : '100876543200003'}",
   "issueDate": "2026-05-30",
   "items": [
-    { "name": "Consulting Services", "qty": 5, "price": 200 }
+    { "name": "Consulting Services", "qty": 5, "price": ${isOman ? 20 : 200} }
   ]
 }`
     },
@@ -41,8 +42,8 @@ export default function ApiDataFlow() {
       code: `<!-- SBDH Header & UBL Invoice -->
 <StandardBusinessDocument>
   <StandardBusinessDocumentHeader>
-    <Sender><Identifier>100234567800003</Identifier></Sender>
-    <Receiver><Identifier>100876543200003</Identifier></Receiver>
+    <Sender><Identifier>${isOman ? 'OM1234567890' : '100234567800003'}</Identifier></Sender>
+    <Receiver><Identifier>${isOman ? 'OM9876543210' : '100876543200003'}</Identifier></Receiver>
   </StandardBusinessDocumentHeader>
   <Invoice>
      <!-- UBL XML body goes here -->
@@ -50,14 +51,14 @@ export default function ApiDataFlow() {
 </StandardBusinessDocument>`
     },
     {
-      title: '3. Real-time FTA Clearance',
-      actor: 'Access Point (C2) ↔ FTA (C5)',
-      desc: 'The Access Point routes the raw invoice to the central Federal Tax Authority audit endpoint for real-time clearance.',
-      code: `// FTA Response (Clearance Status)
+      title: `3. Real-time ${isOman ? 'OTA' : 'FTA'} Clearance`,
+      actor: `Access Point (C2) ↔ ${isOman ? 'OTA' : 'FTA'} (C5)`,
+      desc: `The Access Point routes the raw invoice to the central ${isOman ? 'Oman Tax Authority' : 'Federal Tax Authority'} audit endpoint for real-time clearance.`,
+      code: `// ${isOman ? 'OTA' : 'FTA'} Response (Clearance Status)
 {
   "clearanceStatus": "CLEARED",
-  "ftaSignature": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg...",
-  "qrCodeString": "https://fta.gov.ae/verify?invoice=INV-2026-9004"
+  "authoritySignature": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg...",
+  "qrCodeString": "${isOman ? 'https://taxoman.gov.om' : 'https://fta.gov.ae'}/verify?invoice=INV-2026-9004"
 }`
     },
     {
@@ -65,7 +66,7 @@ export default function ApiDataFlow() {
       actor: 'AP (C2) → AP (C3)',
       desc: 'The cleared XML is signed, encrypted, and dispatched via Applicability Statement 4 (AS4) protocol to the buyer\'s Access Point.',
       code: `AS4 HTTP Request Headers:
-Host: C3-AP-Endpoint.ae
+Host: C3-AP-Endpoint.${isOman ? 'om' : 'ae'}
 Content-Type: multipart/related; boundary=MIMEBoundary
 SOAPAction: "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/oneWay"
 Connection: Keep-Alive`

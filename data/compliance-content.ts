@@ -468,3 +468,131 @@ export const uaeTaxCategories: TaxCategoryDetail[] = [
     example: 'Trading of cargo stored in a free trade zone going directly to Europe without entering the mainland.'
   }
 ];
+
+export const omanMandateTimeline: TimelineEvent[] = [
+  {
+    date: 'August 2026',
+    title: 'Pilot Phase Kick-off',
+    description: 'Oman Tax Authority (OTA) launches pilot e-invoicing. Mandatory for designated large VAT-registered taxpayers.'
+  },
+  {
+    date: 'February 2027',
+    title: 'Phase 1 Mandate Go-Live',
+    description: 'Mandatory PEPPOL PINT-OM billing integration for all remaining large enterprise taxpayers.'
+  },
+  {
+    date: 'August 2027',
+    title: 'Phase 2 SME Rollout',
+    description: 'Mandatory e-invoicing compliance expanded to include medium-sized, small, and micro taxpayers.'
+  },
+  {
+    date: '2028+',
+    title: 'B2G & G2B Integration',
+    description: 'Extension of Fawtara PINT-OM standard to all Government procurement systems.'
+  }
+];
+
+export const omanBusinessRules: BusinessRule[] = [
+  {
+    id: 'OM-R-001',
+    message: 'Seller VAT Identification Number (VATIN) must be provided unless the seller is tax exempt.',
+    context: 'cac:AccountingSupplierParty',
+    test: 'exists(cac:Party/cac:PartyTaxScheme[cac:TaxScheme/cbc:ID = \'VAT\']/cbc:CompanyID)',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-002',
+    message: 'VAT Identification Number (VATIN) must follow Omani format: prefix "OM" followed by exactly 10 digits.',
+    context: 'cbc:CompanyID[ancestor::cac:PartyTaxScheme/cac:TaxScheme/cbc:ID = \'VAT\']',
+    test: 'matches(., \'^OM[0-9]{10}$\')',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-003',
+    message: 'The Document Currency Code must match Omani Rial (OMR) or the tax reporting currency must be OMR.',
+    context: 'cbc:DocumentCurrencyCode',
+    test: '. = \'OMR\' or ../cbc:TaxCurrencyCode = \'OMR\'',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-004',
+    message: 'For Standard Rated Supplies (VAT Category S), the VAT rate must be exactly 5%.',
+    context: 'cac:TaxCategory[cbc:ID = \'S\']',
+    test: 'cbc:Percent = 5',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-005',
+    message: 'Zero Rated Supplies (VAT Category Z) must specify a percent value of 0.',
+    context: 'cac:TaxCategory[cbc:ID = \'Z\']',
+    test: 'cbc:Percent = 0',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-006',
+    message: 'For Out-of-Scope supplies (VAT Category O), the VAT rate must be 0 and the tax scheme must be VAT.',
+    context: 'cac:TaxCategory[cbc:ID = \'O\']',
+    test: 'cbc:Percent = 0 and cac:TaxScheme/cbc:ID = \'VAT\'',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-007',
+    message: 'The invoice issue date must not be in the future.',
+    context: 'cbc:IssueDate',
+    test: 'xs:date(.) <= current-date()',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-008',
+    message: 'A credit note (Document Type 381) must reference at least one original invoice.',
+    context: '/ubl:CreditNote',
+    test: 'exists(cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID)',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-009',
+    message: 'Sum of Invoice line net amounts must equal Invoice Line Extension Amount.',
+    context: 'cac:LegalMonetaryTotal',
+    test: 'cbc:LineExtensionAmount = sum(../cac:InvoiceLine/cbc:LineExtensionAmount)',
+    severity: 'fatal'
+  },
+  {
+    id: 'OM-R-010',
+    message: 'Tax Inclusive Amount must equal Tax Exclusive Amount plus Tax Total Amount.',
+    context: 'cac:LegalMonetaryTotal',
+    test: 'abs(cbc:TaxInclusiveAmount - (cbc:TaxExclusiveAmount + ../cac:TaxTotal/cbc:TaxAmount)) < 0.05',
+    severity: 'fatal'
+  }
+];
+
+export const omanTaxCategories: TaxCategoryDetail[] = [
+  {
+    code: 'S',
+    name: 'Standard Rated',
+    rate: 5,
+    description: 'Enforced on standard domestic trade of goods and services in the Sultanate of Oman.',
+    example: 'Retail, consulting, or general commerce billing in Muscat.'
+  },
+  {
+    code: 'Z',
+    name: 'Zero-Rated',
+    rate: 0,
+    description: 'Supplies subject to 0% VAT in Oman (e.g. food items, medicine, exports, and hydrocarbon supplies).',
+    example: 'Crucial food products supplied to local wholesalers.'
+  },
+  {
+    code: 'E',
+    name: 'Exempt',
+    rate: 0,
+    description: 'Exempted trade (e.g. local public transport, residential rents, and certain financial services).',
+    example: 'Renting a residential apartment in Salalah.'
+  },
+  {
+    code: 'O',
+    name: 'Out of Scope',
+    rate: 0,
+    description: 'Transactions outside the scope of Omani VAT rules.',
+    example: 'Services delivered outside the borders of the Sultanate.'
+  }
+];
+

@@ -1,13 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useLearningStore } from '@/hooks/use-learning-store';
-import { uaeBusinessRules } from '@/data/compliance-content';
+import { uaeBusinessRules, omanBusinessRules } from '@/data/compliance-content';
 import { quizzes } from '@/data/quiz-data';
 import { QuizCard } from '@/components/ui/quiz-card';
 import { CheckCircle2, Search, Filter, ShieldAlert } from 'lucide-react';
 
 export default function BusinessRules() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState<'all' | 'fatal' | 'warning'>('all');
@@ -18,8 +18,10 @@ export default function BusinessRules() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('business-rules-explorer');
+  const isOman = mounted && country === 'om';
+  const rules = isOman ? omanBusinessRules : uaeBusinessRules;
 
-  const filteredRules = uaeBusinessRules.filter((rule) => {
+  const filteredRules = rules.filter((rule) => {
     const matchesSearch = rule.id.toLowerCase().includes(search.toLowerCase()) ||
       rule.message.toLowerCase().includes(search.toLowerCase()) ||
       rule.context.toLowerCase().includes(search.toLowerCase());
@@ -34,7 +36,7 @@ export default function BusinessRules() {
         <span className="text-[10px] font-mono uppercase tracking-widest text-accent font-semibold">Track 3: Technical Deep-Dives</span>
         <h1 className="apple-h1">Schematron Business Rules</h1>
         <p className="text-sm text-textSecondary max-w-xl leading-relaxed">
-          The UAE Federal Tax Authority enforces strict mathematical, logical, and registration checks via Schematron assertions before allowing any network delivery.
+          {isOman ? 'The Oman Tax Authority (OTA)' : 'The UAE Federal Tax Authority (FTA)'} enforces strict mathematical, logical, and registration checks via Schematron assertions before allowing any network delivery.
         </p>
       </div>
 
@@ -136,7 +138,7 @@ export default function BusinessRules() {
             <CheckCircle2 className="w-5 h-5 text-green-400" />
             <div>
               <p className="text-xs font-semibold text-textPrimary">Module Completed</p>
-              <p className="text-[10px] text-textSecondary">You earned 100 XP for mastering UAE Schematron rules.</p>
+              <p className="text-[10px] text-textSecondary">You earned 100 XP for mastering regional Schematron rules.</p>
             </div>
           </div>
         </div>

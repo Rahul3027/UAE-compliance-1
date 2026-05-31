@@ -4,85 +4,121 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%; /* Pure Black */
-    --foreground: 0 0% 98%;
+    --background: 210 20% 98%; /* f8f9fa */
+    --foreground: 222.2 47.4% 11.2%; /* 0f172a (deep navy) */
+
+    --card: 0 0% 100%; /* ffffff */
+    --card-foreground: 222.2 47.4% 11.2%;
     
-    --card: 0 0% 8%; /* Dark Gray */
-    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
     
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 98%;
+    --primary: 222.2 47.4% 11.2%; /* 0f172a (navy) */
+    --primary-foreground: 210 40% 98%; /* f8fafc */
     
-    --primary: 43 74% 61%; /* Luxury Gold: hsl(43, 74%, 61%) #dcb24c */
-    --primary-foreground: 0 0% 0%;
+    --secondary: 210 40% 96.1%; /* f1f5f9 */
+    --secondary-foreground: 222.2 47.4% 11.2%;
     
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%; /* 64748b (slate gray) */
     
-    --muted: 240 3.8% 46.1%; /* Silver-gray text */
-    --muted-foreground: 240 5% 64.9%;
+    --accent: 221.2 83.2% 53.3%; /* 2563eb (vibrant blue) */
+    --accent-foreground: 210 40% 98%;
     
-    --accent: 43 74% 61%;
-    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%; /* e2e8f0 */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    
+    --radius: 0.75rem;
+
+    /* Legacy Variables */
+    --bg-color: #f8f9fa;
+    --panel-color: #ffffff;
+    --panel-light: #f1f5f9;
+    --panel-lighter: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-light: rgba(0, 0, 0, 0.06);
+    --border-light-hover: rgba(0, 0, 0, 0.12);
+    --btn-primary-bg: #0f172a;
+    --btn-primary-text: #ffffff;
+    --btn-secondary-bg: #f1f5f9;
+    --btn-secondary-text: #0f172a;
+  }
+
+  .dark {
+    --background: 222.2 47% 6%; /* 070d19 (rich dark navy) */
+    --foreground: 210 40% 98%; /* f8fafc */
+
+    --card: 222.2 47% 10%; /* 0f172a (dark slate surface) */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222.2 47% 10%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 210 40% 98%; /* f8fafc */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    
+    --secondary: 217.2 32.6% 12%; /* 1e293b */
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217.2 32.6% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 217.2 91.2% 59.8%; /* 3b82f6 (glowing blue) */
+    --accent-foreground: 210 40% 98%;
     
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 43 74% 61%;
+    --destructive-foreground: 210 40% 98%;
 
-    /* Custom variables for theme switcher */
-    --bg-color: #000000;
-    --panel-color: #1c1c1e;
-    --panel-light: #2c2c2e;
-    --panel-lighter: #3a3a3c;
-    --text-primary: #f5f5f7;
-    --text-secondary: #86868b;
+    --border: 217.2 32.6% 17.5%; /* 1e293b */
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
+
+    /* Legacy Variables */
+    --bg-color: #070d19;
+    --panel-color: #0f172a;
+    --panel-light: #1e293b;
+    --panel-lighter: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
     --border-light: rgba(255, 255, 255, 0.08);
     --border-light-hover: rgba(255, 255, 255, 0.16);
     --btn-primary-bg: #ffffff;
-    --btn-primary-text: #000000;
-    --btn-secondary-bg: #2c2c2e;
+    --btn-primary-text: #070d19;
+    --btn-secondary-bg: #1e293b;
     --btn-secondary-text: #ffffff;
   }
+}
 
-  .light {
-    --bg-color: #f5f5f7;
-    --panel-color: #ffffff;
-    --panel-light: #f5f5f7;
-    --panel-lighter: #e5e5ea;
-    --text-primary: #1d1d1f;
-    --text-secondary: #86868b;
-    --border-light: rgba(0, 0, 0, 0.08);
-    --border-light-hover: rgba(0, 0, 0, 0.16);
-    --btn-primary-bg: #1d1d1f;
-    --btn-primary-text: #ffffff;
-    --btn-secondary-bg: #e5e5ea;
-    --btn-secondary-text: #1d1d1f;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Smooth layout transitions for theme switches */
+  body, header, footer, nav, aside, main, .apple-panel, .apple-panel-interactive, .card, button, input, select, textarea {
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, box-shadow 0.3s ease;
   }
 }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Premium Layout Elements */
+/* Premium Layout Elements - Legacy support */
 .apple-panel {
   background-color: var(--panel-color);
   border: 1px solid var(--border-light);
   border-radius: 12px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-.apple-panel:hover {
-  border-color: var(--border-light-hover);
-}
+.apple-panel:hover { border-color: var(--border-light-hover); }
 
 .apple-panel-interactive {
   background-color: var(--panel-color);
@@ -91,7 +127,6 @@ body {
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 .apple-panel-interactive:hover {
   background-color: var(--panel-light);
   border-color: var(--border-light-hover);
@@ -100,87 +135,17 @@ body {
 
 .apple-panel-active {
   background-color: var(--panel-color);
-  border: 1px solid #dcb24c;
+  border: 1px solid var(--accent);
   border-radius: 12px;
 }
 
-/* Buttons */
-.btn-apple-primary {
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  font-weight: 500;
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
-  border-radius: 980px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
+.apple-h1 { @apply text-4xl font-bold tracking-tight text-foreground; }
+.apple-h2 { @apply text-2xl font-semibold tracking-tight text-foreground; }
+.apple-h3 { @apply text-xl font-semibold tracking-tight text-foreground; }
+.apple-body { @apply text-base text-muted-foreground leading-relaxed; }
 
-.btn-apple-primary:hover {
-  opacity: 0.9;
-}
-
-.btn-apple-secondary {
-  background-color: var(--btn-secondary-bg);
-  color: var(--btn-secondary-text);
-  font-weight: 500;
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
-  border-radius: 980px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-light);
-  transition: all 0.2s ease;
-}
-
-.btn-apple-secondary:hover {
-  background-color: var(--panel-lighter);
-}
-
-/* Badges */
-.badge-apple {
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.25rem 0.625rem;
-  border-radius: 980px;
-  display: inline-flex;
-  align-items: center;
-}
-
-/* Text styles matching Apple style guide */
-.apple-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -0.021em;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
-}
-
-.apple-h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.018em;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
-}
-
-.apple-h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.014em;
-  color: var(--text-primary);
-  transition: color 0.3s ease;
-}
-
-.apple-body {
-  font-size: 0.9375rem;
-  line-height: 1.47059;
-  font-weight: 400;
-  letter-spacing: -0.009em;
-  color: var(--text-secondary);
+.mask-image-radial {
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
 }
 
 /* Custom Scrollbar */

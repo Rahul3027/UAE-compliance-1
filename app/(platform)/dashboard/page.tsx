@@ -7,7 +7,7 @@ import { useLearningStore } from '@/hooks/use-learning-store';
 import { Award, BookOpen, GraduationCap, CheckCircle2, ChevronRight } from 'lucide-react';
 
 export default function Dashboard() {
-  const { completedModules, xp, quizScores } = useLearningStore();
+  const { completedModules, xp, quizScores, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function Dashboard() {
   const tracks = {
     'getting-started': {
       title: 'Getting Started',
-      description: 'Foundations of UAE e-invoicing and network models.',
+      description: 'Foundations of regional e-invoicing and network models.',
       modules: contentModules.filter(m => m.category === 'getting-started')
     },
     'core-concepts': {
@@ -42,6 +42,8 @@ export default function Dashboard() {
     }
   };
 
+  const isOman = mounted && country === 'om';
+
   return (
     <div className="space-y-12 pb-12">
       {/* Hero Welcome */}
@@ -55,10 +57,10 @@ export default function Dashboard() {
           Interactive Learning Platform
         </span>
         <h1 className="apple-h1 leading-tight">
-          UAE PEPPOL PINT AE<br />Compliance Lab.
+          {isOman ? 'Oman PEPPOL PINT OM' : 'UAE PEPPOL PINT AE'} <br />Compliance Lab.
         </h1>
         <p className="text-sm text-textSecondary max-w-xl leading-relaxed">
-          Learn e-invoicing compliance through hands-on simulations, interactive XML trees, calculations, and quizzes. No tedious paperwork—just practical engineering.
+          Learn regional e-invoicing compliance through hands-on simulations, interactive XML trees, calculations, and quizzes. No tedious paperwork—just practical engineering.
         </p>
       </motion.div>
 
@@ -127,6 +129,14 @@ export default function Dashboard() {
                   const isCompleted = mounted && completedModules.includes(mod.id);
                   const score = mounted ? quizScores[mod.id] : null;
 
+                  // Adaptive titles for country
+                  let title = mod.title;
+                  let description = mod.description;
+                  if (isOman) {
+                    title = title.replace('UAE', 'Oman').replace('PINT AE', 'PINT OM');
+                    description = description.replace('UAE', 'Oman').replace('PINT AE', 'PINT OM');
+                  }
+
                   return (
                     <Link key={mod.id} href={`/${mod.id}`}>
                       <div className="group apple-panel-interactive p-4 h-full flex flex-col justify-between">
@@ -151,10 +161,10 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <h4 className="text-xs font-semibold text-textPrimary group-hover:text-accent transition-colors flex items-center gap-1">
-                            {mod.title}
+                            {title}
                           </h4>
                           <p className="text-[11px] text-textSecondary leading-normal line-clamp-2">
-                            {mod.description}
+                            {description}
                           </p>
                         </div>
 
@@ -174,6 +184,24 @@ export default function Dashboard() {
             </motion.div>
           ))}
         </div>
+      </div>
+
+      {/* Spec reference */}
+      <div className="apple-panel p-5 flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium">Official Specification Reference</p>
+          <p className="text-xs text-textSecondary mt-0.5">
+            {isOman ? 'PINT OM Draft spec · Oman Tax Authority' : 'PINT AE v1.0.2 · Released June 9, 2025'}
+          </p>
+        </div>
+        <a
+          href={isOman ? "https://peppol.org/" : "https://docs.peppol.eu/poac/ae/2025-Q2/pint-ae/"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-apple-secondary text-xs py-1.5"
+        >
+          View Spec ↗
+        </a>
       </div>
     </div>
   );

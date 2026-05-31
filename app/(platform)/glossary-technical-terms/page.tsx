@@ -5,7 +5,7 @@ import { glossaryTerms } from '@/data/compliance-content';
 import { CheckCircle2, Search, BookOpen } from 'lucide-react';
 
 export default function GlossaryTerms() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<'all' | 'peppol' | 'tax' | 'technical'>('all');
@@ -19,8 +19,37 @@ export default function GlossaryTerms() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('glossary-technical-terms');
+  const isOman = mounted && country === 'om';
 
-  const filteredTerms = glossaryTerms.filter((term) => {
+  // Map terms dynamically based on selected country
+  const displayTerms = glossaryTerms.map((t) => {
+    if (isOman) {
+      if (t.term === 'PINT AE') {
+        return {
+          term: 'PINT OM',
+          definition: 'The specific Oman customization of the PINT specification, implementing Oman Tax Authority (OTA) rules (like 5% VAT, VATIN, and Arabic requirements).',
+          category: t.category
+        };
+      }
+      if (t.term === 'TRN') {
+        return {
+          term: 'VATIN',
+          definition: 'VAT Identification Number. A unique 10-digit identifier prefixed with "OM" issued by the OTA to businesses registered for VAT in Oman.',
+          category: t.category
+        };
+      }
+      return {
+        ...t,
+        definition: t.definition
+          .replaceAll('UAE', 'Oman')
+          .replaceAll('FTA', 'OTA')
+          .replaceAll('TRN', 'VATIN')
+      };
+    }
+    return t;
+  });
+
+  const filteredTerms = displayTerms.filter((term) => {
     const matchesSearch = term.term.toLowerCase().includes(searchQuery.toLowerCase()) ||
       term.definition.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'all' || term.category === activeCategory;
@@ -34,7 +63,7 @@ export default function GlossaryTerms() {
         <span className="text-[10px] font-mono uppercase tracking-widest text-accent font-semibold">Track 1: Getting Started</span>
         <h1 className="apple-h1">Glossary & Technical Terms</h1>
         <p className="text-sm text-textSecondary max-w-xl leading-relaxed">
-          Quick-reference database of technical terms, acronyms, and legal concepts used in the UAE PEPPOL PINT compliance ecosystem.
+          Quick-reference database of technical terms, acronyms, and legal concepts used in the {isOman ? 'Oman' : 'UAE'} PEPPOL PINT compliance ecosystem.
         </p>
       </div>
 

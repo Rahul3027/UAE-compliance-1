@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function PlatformShell({ children }: { children: ReactNode }) {
   const path = usePathname();
-  const { completedModules, xp, resetProgress, theme, toggleTheme } = useLearningStore();
+  const { completedModules, xp, resetProgress, theme, toggleTheme, country, setCountry } = useLearningStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -28,6 +28,10 @@ export function PlatformShell({ children }: { children: ReactNode }) {
     }
   }, [theme, mounted]);
 
+  const handleCountryToggle = (code: 'ae' | 'om') => {
+    setCountry(code);
+  };
+
   const closeMobile = () => setMobileOpen(false);
 
   const sidebarContent = (
@@ -36,9 +40,37 @@ export function PlatformShell({ children }: { children: ReactNode }) {
       <div className="p-5 border-b border-borderLight flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2" onClick={closeMobile}>
           <Layers className="w-5 h-5 text-accent" />
-          <span className="font-semibold text-sm tracking-tight font-sans">UAE PEPPOL Lab</span>
+          <span className="font-semibold text-sm tracking-tight font-sans">
+            {mounted && country === 'om' ? 'Oman PEPPOL Lab' : 'UAE PEPPOL Lab'}
+          </span>
         </Link>
       </div>
+
+      {/* Country Switcher Toggle */}
+      {mounted && (
+        <div className="px-5 py-2.5 border-b border-borderLight flex gap-2 font-mono">
+          <button
+            onClick={() => handleCountryToggle('ae')}
+            className={`flex-1 py-1 rounded text-[9px] uppercase font-bold border transition-all flex items-center justify-center gap-1.5 ${
+              country === 'ae'
+                ? 'border-accent bg-accent/15 text-accent shadow-[0_0_8px_rgba(220,178,76,0.1)]'
+                : 'border-borderLight text-textSecondary hover:text-textPrimary hover:bg-panelLight/40'
+            }`}
+          >
+            <span>🇦🇪</span> <span>UAE</span>
+          </button>
+          <button
+            onClick={() => handleCountryToggle('om')}
+            className={`flex-1 py-1 rounded text-[9px] uppercase font-bold border transition-all flex items-center justify-center gap-1.5 ${
+              country === 'om'
+                ? 'border-accent bg-accent/15 text-accent shadow-[0_0_8px_rgba(220,178,76,0.1)]'
+                : 'border-borderLight text-textSecondary hover:text-textPrimary hover:bg-panelLight/40'
+            }`}
+          >
+            <span>🇴🇲</span> <span>Oman</span>
+          </button>
+        </div>
+      )}
 
       {/* User Status */}
       {mounted && (
@@ -116,7 +148,9 @@ export function PlatformShell({ children }: { children: ReactNode }) {
       <header className="md:hidden flex items-center justify-between px-5 py-4 border-b border-borderLight bg-panel sticky top-0 z-40 transition-colors duration-300">
         <Link href="/dashboard" className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-accent" />
-          <span className="font-semibold text-xs tracking-tight">UAE PEPPOL Lab</span>
+          <span className="font-semibold text-xs tracking-tight">
+            {mounted && country === 'om' ? 'Oman PEPPOL' : 'UAE PEPPOL'}
+          </span>
         </Link>
         <div className="flex items-center gap-4">
           {mounted && (

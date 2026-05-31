@@ -4,7 +4,7 @@ import { useLearningStore } from '@/hooks/use-learning-store';
 import { CheckCircle2, ShieldAlert, CheckSquare } from 'lucide-react';
 
 export default function DevLearningCenter() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
 
   // Checklist states
@@ -21,6 +21,7 @@ export default function DevLearningCenter() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('developer-learning-center');
+  const isOman = mounted && country === 'om';
 
   const toggleCheck = (key: string) => {
     const updated = { ...checkedList, [key]: !checkedList[key] };
@@ -33,9 +34,21 @@ export default function DevLearningCenter() {
   };
 
   const checklistItems = [
-    { key: 'trn', label: 'Validate Tax Registration Numbers (TRN)', desc: 'Assert that all supplier and customer TRNs contain exactly 15 digits.' },
+    { 
+      key: 'trn', 
+      label: isOman ? 'Validate VAT Identification Numbers (VATIN)' : 'Validate Tax Registration Numbers (TRN)', 
+      desc: isOman 
+        ? 'Assert that all supplier and customer VATINs follow the Omani format: OM followed by exactly 10 digits.' 
+        : 'Assert that all supplier and customer TRNs contain exactly 15 digits.' 
+    },
     { key: 'tls', label: 'Verify Access Point TLS/AS4 certificates', desc: 'Secure connection tunnels between C2 and C3 with valid PEPPOL PKI certificates.' },
-    { key: 'schema', label: 'Integrate Schematron Validator', desc: 'Ensure invoices pass the custom UAE rules locally before transmitting to the AP network.' },
+    { 
+      key: 'schema', 
+      label: 'Integrate Schematron Validator', 
+      desc: isOman 
+        ? 'Ensure invoices pass the custom Omani (Fawtara) rules locally before transmitting to the AP network.' 
+        : 'Ensure invoices pass the custom UAE rules locally before transmitting to the AP network.' 
+    },
     { key: 'smp', label: 'Verify SMP participant entries', desc: 'Confirm receiving buyer accounts are correctly queried in SML/SMP registries.' },
     { key: 'callbacks', label: 'Configure callback status hooks', desc: 'Ensure ApplicationResponses (Acceptances, Disputes) route correctly back into core ERP logs.' }
   ];
@@ -47,7 +60,7 @@ export default function DevLearningCenter() {
         <span className="text-[10px] font-mono uppercase tracking-widest text-accent font-semibold">Track 4: Hands-On Practice</span>
         <h1 className="apple-h1">Developer Implementation Center</h1>
         <p className="text-sm text-textSecondary max-w-xl leading-relaxed">
-          Ready for production? Complete the go-live readiness checklist to audit your PEPPOL PINT AE integration.
+          Ready for production? Complete the go-live readiness checklist to audit your PEPPOL PINT {isOman ? 'OM' : 'AE'} integration.
         </p>
       </div>
 
@@ -57,7 +70,7 @@ export default function DevLearningCenter() {
           <CheckSquare className="w-4 h-4 text-accent" /> Go-Live Readiness Audit
         </h3>
         <p className="text-xs text-textSecondary leading-relaxed">
-          Review and check off compliance targets. Audit the entire implementation stack from registration TRNs down to AS4 networking.
+          Review and check off compliance targets. Audit the entire implementation stack from registration {isOman ? 'VATINs' : 'TRNs'} down to AS4 networking.
         </p>
 
         <div className="space-y-2">
@@ -104,7 +117,7 @@ export default function DevLearningCenter() {
             • **Asynchronous Responses**: Treat invoice delivery as decoupled from invoice approvals. Always handle callbacks via decoupled API listeners rather than locking browser sessions.
           </p>
           <p>
-            • **Audit Archiving**: Invoices must be archived in their original, cryptographically signed XML format for a minimum of 10 years (or as regulated by FTA guidelines).
+            • **Audit Archiving**: Invoices must be archived in their original, cryptographically signed XML format for a minimum of 10 years (or as regulated by {isOman ? 'OTA' : 'FTA'} guidelines).
           </p>
           <p>
             • **Fail-safes**: Implement robust queue mechanisms to store and retry transfers if SML lookups or network handshakes experience intermittent timeouts.

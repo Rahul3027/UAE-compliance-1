@@ -7,7 +7,7 @@ import { CheckCircle2, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function InvoiceLifecycle() {
-  const { completeModule, completedModules } = useLearningStore();
+  const { completeModule, completedModules, country } = useLearningStore();
   const [mounted, setMounted] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
@@ -16,6 +16,7 @@ export default function InvoiceLifecycle() {
   }, []);
 
   const isCompleted = mounted && completedModules.includes('invoice-lifecycle');
+  const isOman = mounted && country === 'om';
 
   const lifecycleSteps = [
     {
@@ -34,9 +35,13 @@ export default function InvoiceLifecycle() {
       details: 'Any syntax, structural, or business calculation errors reject the document immediately.'
     },
     {
-      title: '4. Clear (C5 / FTA)',
-      desc: 'C2 routes the invoice to the FTA validation engine for real-time clearance.',
-      details: 'The FTA signs the document or returns status checks.'
+      title: isOman ? '4. Clear (C5 / OTA)' : '4. Clear (C5 / FTA)',
+      desc: isOman 
+        ? 'C2 routes the invoice to the OTA validation engine for real-time clearance.'
+        : 'C2 routes the invoice to the FTA validation engine for real-time clearance.',
+      details: isOman 
+        ? 'The OTA (Fawtara) audits the document or returns status checks.'
+        : 'The FTA signs the document or returns status checks.'
     },
     {
       title: '5. Transmit (C2 → C3)',
@@ -57,7 +62,11 @@ export default function InvoiceLifecycle() {
     { code: 'P4', name: 'Deemed supply billing', desc: 'Declaring tax on self-supplies or gifts.' },
     { code: 'P5', name: 'Export billing', desc: 'Declaring tax-free sales to non-GCC entities.' },
     { code: 'P6', name: 'Self-billing', desc: 'Buyer creates invoice on behalf of the seller.' },
-    { code: 'P7', name: 'Free Trade Zone billing', desc: 'Billing within designated zones.' },
+    { 
+      code: 'P7', 
+      name: isOman ? 'Special Economic Zone billing' : 'Free Trade Zone billing', 
+      desc: isOman ? 'Billing within designated Omani zones (e.g., Duqm SEZ).' : 'Billing within designated UAE free zones.' 
+    },
     { code: 'P8', name: 'Simplified Credit Note', desc: 'Corrective note for B2C invoices.' },
     { code: 'P9', name: 'Profit Margin billing', desc: 'Billing under the margin scheme.' }
   ];
@@ -133,7 +142,7 @@ export default function InvoiceLifecycle() {
       {/* P1 to P9 Processes */}
       <div className="space-y-4">
         <h3 className="text-xs font-semibold text-textSecondary uppercase tracking-widest font-mono border-b border-white/[0.06] pb-2">
-          UAE Invoice Processes (P1 - P9)
+          {isOman ? 'Oman' : 'UAE'} Invoice Processes (P1 - P9)
         </h3>
         <div className="grid sm:grid-cols-3 gap-3">
           {processes.map((p) => (
