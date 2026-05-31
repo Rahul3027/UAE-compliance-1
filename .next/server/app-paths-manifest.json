@@ -1,6 +1,6 @@
 {
   "/(corporate)/services/page": "app/(corporate)/services/page.js",
-  "/(platform)/erp-integration-center/page": "app/(platform)/erp-integration-center/page.js",
+  "/(platform)/uae-overview/page": "app/(platform)/uae-overview/page.js",
   "/(platform)/dashboard/page": "app/(platform)/dashboard/page.js",
-  "/(platform)/uae-overview/page": "app/(platform)/uae-overview/page.js"
+  "/(platform)/erp-integration-center/page": "app/(platform)/erp-integration-center/page.js"
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { usePreferences, FontSizePreference } from '@/hooks/use-preferences';
+import { FontSizePreference, usePreferences } from '@/hooks/use-preferences';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sun, Moon, Monitor, Eye, RotateCcw, Sliders, Play, SquareEqual, ZoomIn } from 'lucide-react';
 import { useEffect, useRef } from 'react';
@@ -40,7 +40,7 @@ export function PreferencesModal() {
   }, [isPreferencesOpen]);
 
   const isReduced = preferences.motion === 'reduced';
-  
+
   // Custom transition settings that respect the reduced-motion preference
   const backdropTransition = isReduced ? { duration: 0 } : { duration: 0.2 };
   const panelTransition = isReduced ? { duration: 0 } : { type: 'spring', damping: 24, stiffness: 220 };
@@ -97,7 +97,7 @@ export function PreferencesModal() {
 
             {/* Scrollable Contents */}
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
-              
+
               {/* SECTION 1: Theme Mode */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -112,11 +112,10 @@ export function PreferencesModal() {
                   {/* Light Theme Card */}
                   <button
                     onClick={() => updatePreference('theme', 'light')}
-                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border text-left transition-all ${
-                      preferences.theme === 'light'
-                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
-                        : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
-                    }`}
+                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border text-left transition-all ${preferences.theme === 'light'
+                      ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                      : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
+                      }`}
                   >
                     <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500">
                       <Sun className="w-4.5 h-4.5" />
@@ -127,11 +126,10 @@ export function PreferencesModal() {
                   {/* Dark Theme Card */}
                   <button
                     onClick={() => updatePreference('theme', 'dark')}
-                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border text-left transition-all ${
-                      preferences.theme === 'dark'
-                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
-                        : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
-                    }`}
+                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border text-left transition-all ${preferences.theme === 'dark'
+                      ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                      : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
+                      }`}
                   >
                     <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
                       <Moon className="w-4.5 h-4.5" />
@@ -142,11 +140,10 @@ export function PreferencesModal() {
                   {/* System Theme Card */}
                   <button
                     onClick={() => updatePreference('theme', 'system')}
-                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border text-left transition-all ${
-                      preferences.theme === 'system'
-                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
-                        : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
-                    }`}
+                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border text-left transition-all ${preferences.theme === 'system'
+                      ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                      : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
+                      }`}
                   >
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
                       <Monitor className="w-4.5 h-4.5" />
@@ -170,11 +167,10 @@ export function PreferencesModal() {
                   {/* Comfortable Density Card */}
                   <button
                     onClick={() => updatePreference('density', 'comfortable')}
-                    className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all ${
-                      preferences.density === 'comfortable'
-                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
-                        : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
-                    }`}
+                    className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all ${preferences.density === 'comfortable'
+                      ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                      : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
+                      }`}
                   >
                     <div className="w-7 h-7 rounded-md bg-secondary/80 flex items-center justify-center text-muted-foreground shrink-0">
                       <SquareEqual className="w-4 h-4" />
@@ -190,11 +186,10 @@ export function PreferencesModal() {
                   {/* Compact Density Card */}
                   <button
                     onClick={() => updatePreference('density', 'compact')}
-                    className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all ${
-                      preferences.density === 'compact'
-                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
-                        : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
-                    }`}
+                    className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all ${preferences.density === 'compact'
+                      ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                      : 'border-border bg-muted/10 hover:bg-muted/20 hover:border-border-light-hover'
+                      }`}
                   >
                     <div className="w-7 h-7 rounded-md bg-secondary/80 flex items-center justify-center text-muted-foreground shrink-0">
                       <Sliders className="w-4 h-4" />
@@ -231,14 +226,12 @@ export function PreferencesModal() {
                       onClick={() => updatePreference('motion', preferences.motion === 'default' ? 'reduced' : 'default')}
                       role="switch"
                       aria-checked={preferences.motion === 'reduced'}
-                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent/50 ${
-                        preferences.motion === 'reduced' ? 'bg-accent' : 'bg-muted-foreground/30'
-                      }`}
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-accent/50 ${preferences.motion === 'reduced' ? 'bg-accent' : 'bg-muted-foreground/30'
+                        }`}
                     >
                       <span
-                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                          preferences.motion === 'reduced' ? 'translate-x-4' : 'translate-x-0'
-                        }`}
+                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${preferences.motion === 'reduced' ? 'translate-x-4' : 'translate-x-0'
+                          }`}
                       />
                     </button>
                   </div>
@@ -266,11 +259,10 @@ export function PreferencesModal() {
                       <button
                         key={size}
                         onClick={() => updatePreference('fontSize', size)}
-                        className={`flex-1 py-2 px-2.5 rounded-lg border text-center transition-all focus:outline-none ${
-                          preferences.fontSize === size
-                            ? 'border-accent bg-accent/10 text-accent font-black'
-                            : 'border-border bg-muted/10 hover:bg-muted/20 text-muted-foreground hover:text-foreground font-semibold'
-                        }`}
+                        className={`flex-1 py-2 px-2.5 rounded-lg border text-center transition-all focus:outline-none ${preferences.fontSize === size
+                          ? 'border-accent bg-accent/10 text-accent font-black'
+                          : 'border-border bg-muted/10 hover:bg-muted/20 text-muted-foreground hover:text-foreground font-semibold'
+                          }`}
                       >
                         <span className="text-xs font-mono select-none">
                           {size === 'sm' && 'A-'}
