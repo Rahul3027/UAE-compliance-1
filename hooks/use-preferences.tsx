@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
 
 export type ThemePreference = 'light' | 'dark' | 'system';
 export type LayoutDensityPreference = 'comfortable' | 'compact';
@@ -128,7 +129,9 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
         closePreferences,
       }}
     >
-      {children}
+      <MotionConfig transition={preferences.motion === 'reduced' ? { duration: 0 } : undefined}>
+        {children}
+      </MotionConfig>
     </PreferencesContext.Provider>
   );
 }
@@ -141,32 +144,3 @@ export function usePreferences() {
   return context;
 }
 
-/**
- * FOUC-prevention script to be injected inside <head> of RootLayout.
- * Runs synchronously prior to DOM paint.
- */
-export function PreferencesScript() {
-  const scriptContent = `
-    (function() {
-      try {
-        var prefs = JSON.parse(localStorage.getItem('${STORAGE_KEY}') || '{}');
-        
-        // Theme Configuration
-        var theme = prefs.theme || '${DEFAULT_PREFERENCES.theme}';
-        var dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', dark);
-        document.documentElement.setAttribute('data-theme', theme);
-        
-        // Density Configuration
-        document.documentElement.setAttribute('data-density', prefs.density || '${DEFAULT_PREFERENCES.density}');
-        
-        // Motion Configuration
-        document.documentElement.setAttribute('data-motion', prefs.motion || '${DEFAULT_PREFERENCES.motion}');
-        
-        // Font Size Configuration
-        document.documentElement.setAttribute('data-font-size', prefs.fontSize || '${DEFAULT_PREFERENCES.fontSize}');
-      } catch (e) {}
-    })()
-  `;
-  return <script dangerouslySetInnerHTML={{ __html: scriptContent }} />;
-}

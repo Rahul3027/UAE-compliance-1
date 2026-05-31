@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/internal
+
+Sitemap: https://compliance.example.com/sitemap.xml

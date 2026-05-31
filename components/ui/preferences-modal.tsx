@@ -1,6 +1,6 @@
 'use client';
 
-import { usePreferences } from '@/hooks/use-preferences';
+import { usePreferences, FontSizePreference } from '@/hooks/use-preferences';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sun, Moon, Monitor, Eye, RotateCcw, Sliders, Play, SquareEqual, ZoomIn } from 'lucide-react';
 import { useEffect, useRef } from 'react';

@@ -31,15 +31,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/not-found.js"
     ],
-    "/(platform)/peppol-5-corner/page": [
+    "/(corporate)/services/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(platform)/peppol-5-corner/page.js"
+      "static/chunks/app/(corporate)/services/page.js"
+    ],
+    "/(platform)/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(platform)/dashboard/page.js"
     ],
     "/(platform)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(platform)/layout.js"
+    ],
+    "/(platform)/erp-integration-center/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(platform)/erp-integration-center/page.js"
     ],
     "/(platform)/uae-overview/page": [
       "static/chunks/webpack.js",
