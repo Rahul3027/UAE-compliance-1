@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Search, ChevronDown, Menu, X, BookOpen, Network, FileCode, CheckSquare, Layers, HelpCircle, Landmark } from 'lucide-react';
 import { useGlobalSearch } from '@/hooks/use-global-search';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { PreferencesToggle } from '@/components/ui/preferences-toggle';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function CorporateNav() {
@@ -176,8 +176,8 @@ export function CorporateNav() {
               </kbd>
             </button>
 
-            {/* Theme Toggle */}
-            <ThemeToggle />
+            {/* Preferences Toggle */}
+            <PreferencesToggle />
 
             {/* CTA button */}
             <Button asChild size="sm" className="rounded-full px-5 text-xs h-9">
@@ -187,7 +187,7 @@ export function CorporateNav() {
 
           {/* Mobile hamburger menu */}
           <div className="flex md:hidden items-center gap-3">
-            <ThemeToggle />
+            <PreferencesToggle />
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-1 text-muted-foreground hover:text-foreground focus:outline-none"
