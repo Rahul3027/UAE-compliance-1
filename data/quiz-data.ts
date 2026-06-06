@@ -200,5 +200,44 @@ export const quizzes: QuizData = {
       correctIndex: 1,
       explanation: 'A fatal business rule failure halts the transmission. The Access Point will block delivery and reject the document.'
     }
+  ],
+  'developer-learning-center': [
+    {
+      id: 'dlc-1',
+      question: 'Which secure transport protocol is standard for sending invoices between Access Points (C2 and C3) in PEPPOL PINT?',
+      options: [
+        'SFTP with private key pairs',
+        'HTTP REST with API authorization tokens',
+        'AS4 over HTTPS with PEPPOL PKI certificates',
+        'SOAP Web Services with basic authentication'
+      ],
+      correctIndex: 2,
+      explanation: 'PEPPOL mandates the AS4 (Applicability Statement 4) profile over HTTPS, requiring verified PEPPOL PKI digital certificates to validate endpoints.'
+    },
+    {
+      id: 'dlc-2',
+      question: 'In e-invoicing architecture, what mechanism is used to route status updates (Acceptances, Disputes) back into an enterprise ERP?',
+      options: [
+        'An SML lookup check',
+        'Asynchronous HTTP callback status webhooks',
+        'Manual email notifications',
+        'Repeated polling of the SMP directory registry'
+      ],
+      correctIndex: 1,
+      explanation: 'Decoupled asynchronous webhooks route ApplicationResponses (IR/MLR) back into the ERP database without locking the billing server threads.'
+    },
+    {
+      id: 'dlc-3',
+      question: 'For Oman-specific integrations, what is the required company ID prefix and digit length for standard tax invoices (VATIN)?',
+      options: [
+        'OM prefix followed by exactly 10 digits',
+        'Exactly 15 digits with no prefix',
+        'AE prefix followed by 12 digits',
+        'OM prefix followed by exactly 15 digits'
+      ],
+      correctIndex: 0,
+      explanation: 'Oman Fawtara Schematron rules require the Seller VATIN to be prefixed with OM followed by exactly 10 numeric digits (e.g., OM1234567890).'
+    }
   ]
 };
+

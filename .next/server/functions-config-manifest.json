@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/blog/[slug]":{},"/faq":{},"/blog":{},"/industries/[slug]":{},"/regulatory-updates":{},"/services/[slug]":{},"/services":{},"/legal/privacy":{},"/legal/terms":{}}}
+{"version":1,"functions":{"/blog":{},"/regulatory-updates":{},"/services/[slug]":{},"/services":{},"/blog/[slug]":{},"/legal/terms":{},"/legal/privacy":{},"/industries/[slug]":{},"/faq":{}}}
