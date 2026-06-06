@@ -1,28 +1,16 @@
 'use client';
 import { useState } from 'react';
-import { Key, FileCode, CheckSquare, ShieldAlert, Terminal, Copy, Check, Info, BookOpen } from 'lucide-react';
+import { Key, FileCode, CheckSquare, ShieldAlert, Terminal, Copy, Check, Info, BookOpen, Layers } from 'lucide-react';
+import { dictionaryItems, Category, getStats } from '@/data/data-dictionary';
 
 type Tab = 'auth' | 'generate' | 'validate' | 'errors' | 'data';
-
-interface DictionaryItem {
-  path: string;
-  bt: string;
-  name: string;
-  req: {
-    ae: 'mandatory' | 'conditional' | 'optional';
-    om: 'mandatory' | 'conditional' | 'optional';
-  };
-  rules: {
-    ae: string;
-    om: string;
-  };
-}
 
 export default function DocumentationPage() {
   const [activeTab, setActiveTab] = useState<Tab>('auth');
   const [copied, setCopied] = useState<Record<string, boolean>>({});
   const [activeCountry, setActiveCountry] = useState<'ae' | 'om'>('ae');
   const [activeReq, setActiveReq] = useState<'all' | 'mandatory' | 'conditional' | 'optional'>('all');
+  const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
 
   const triggerCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -32,134 +20,16 @@ export default function DocumentationPage() {
     }, 2000);
   };
 
-  const dictionaryItems: DictionaryItem[] = [
-    {
-      path: 'cbc:ID',
-      bt: 'BT-1',
-      name: 'Invoice Identifier',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'Must be a unique invoice number generated sequentially by the ERP.',
-        om: 'Must be a unique invoice number generated sequentially by the billing system.'
-      }
-    },
-    {
-      path: 'cbc:IssueDate',
-      bt: 'BT-2',
-      name: 'Invoice Issue Date',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'The date when the invoice was issued. Must not be in the future.',
-        om: 'The date when the invoice was issued. Must not be in the future.'
-      }
-    },
-    {
-      path: 'cbc:InvoiceTypeCode',
-      bt: 'BT-3',
-      name: 'Invoice Type Code',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'Must use codes: 380 (Standard Tax Invoice), 381 (Credit Note), 388 (Simplified Invoice), 480 (Out of Scope Invoice).',
-        om: 'Must use codes: 380 (Tax Invoice), 381 (Credit Note), 388 (Simplified Invoice).'
-      }
-    },
-    {
-      path: 'cbc:DocumentCurrencyCode',
-      bt: 'BT-5',
-      name: 'Document Currency Code',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'The currency code of the invoice amount. Usually AED. If other, cbc:TaxCurrencyCode must be AED.',
-        om: 'The currency code of the invoice amount. Usually OMR. If other, cbc:TaxCurrencyCode must be OMR.'
-      }
-    },
-    {
-      path: 'cbc:TaxCurrencyCode',
-      bt: 'BT-6',
-      name: 'Tax Reporting Currency Code',
-      req: { ae: 'conditional', om: 'conditional' },
-      rules: {
-        ae: 'Mandatory if the Document Currency Code is not AED. Value must be AED.',
-        om: 'Mandatory if the Document Currency Code is not OMR. Value must be OMR.'
-      }
-    },
-    {
-      path: 'cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID',
-      bt: 'BT-31',
-      name: 'Seller Tax ID (TRN/VATIN)',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'Must be the 15-digit UAE Tax Registration Number (TRN) of the supplier.',
-        om: 'Must be the Oman VAT Identification Number (VATIN) prefixed with "OM" followed by 10 digits.'
-      }
-    },
-    {
-      path: 'cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID',
-      bt: 'BT-48',
-      name: 'Buyer Tax ID (TRN/VATIN)',
-      req: { ae: 'conditional', om: 'conditional' },
-      rules: {
-        ae: 'Mandatory for B2B standard rated invoices. Must be exactly 15 digits. Omitted/Optional for B2C simplified.',
-        om: 'Mandatory for B2B standard rated invoices. Prefix OM + 10 digits. Omitted/Optional for B2C simplified.'
-      }
-    },
-    {
-      path: 'cac:PaymentMeans',
-      bt: 'BG-16',
-      name: 'Payment Instructions',
-      req: { ae: 'optional', om: 'optional' },
-      rules: {
-        ae: 'Optionally specifies the payment channel, bank routing keys, and credit transfer details.',
-        om: 'Optionally specifies the payment channel, bank routing keys, and credit transfer details.'
-      }
-    },
-    {
-      path: 'cac:TaxTotal/cbc:TaxAmount',
-      bt: 'BT-110',
-      name: 'Total VAT Amount',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'The sum of all VAT category tax amounts, calculated in the national reporting currency (AED).',
-        om: 'The sum of all VAT category tax amounts, calculated in the national reporting currency (OMR).'
-      }
-    },
-    {
-      path: 'cac:InvoiceLine/cbc:ID',
-      bt: 'BT-126',
-      name: 'Invoice Line ID',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'A unique sequential line identifier (e.g. "1", "2").',
-        om: 'A unique sequential line identifier (e.g. "1", "2").'
-      }
-    },
-    {
-      path: 'cac:InvoiceLine/cac:Item/cbc:Name',
-      bt: 'BT-153',
-      name: 'Item Description',
-      req: { ae: 'mandatory', om: 'mandatory' },
-      rules: {
-        ae: 'Name or brief text description of the supplied item or service.',
-        om: 'Name or brief text description of the supplied item or service.'
-      }
-    },
-    {
-      path: 'cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID',
-      bt: 'BT-25',
-      name: 'Billing Reference ID',
-      req: { ae: 'conditional', om: 'conditional' },
-      rules: {
-        ae: 'Mandatory for Credit/Debit Notes (Doc Type 381/383) to link them back to the original invoice ID.',
-        om: 'Mandatory for Credit/Debit Notes (Doc Type 381/383) to link them back to the original invoice ID.'
-      }
-    }
-  ];
+  const categories: (Category | 'all')[] = ['all', 'Header', 'Supplier', 'Buyer', 'Payment & Delivery', 'Tax', 'Totals', 'Lines'];
 
   const filteredItems = dictionaryItems.filter((item) => {
     const itemReq = item.req[activeCountry];
-    if (activeReq === 'all') return true;
-    return itemReq === activeReq;
+    const matchesReq = activeReq === 'all' || itemReq === activeReq;
+    const matchesCat = activeCategory === 'all' || item.category === activeCategory;
+    return matchesReq && matchesCat;
   });
+
+  const stats = getStats();
 
   const codeSnippets = {
     authCurl: `curl -X POST https://api.compliance.intelligence/v1/validate \\
@@ -521,6 +391,29 @@ validateInvoice();`,
                   </p>
                 </div>
 
+                {/* Country Statistics Widget */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3.5">
+                    <span className="text-2xl">🇦🇪</span>
+                    <div>
+                      <h4 className="text-xs font-bold text-foreground">UAE Mandate Profile</h4>
+                      <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                        <span className="text-primary font-bold">{stats.ae.mandatory}</span> Mandatory / <span className="font-semibold text-foreground">{stats.ae.total}</span> Total Elements
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3.5">
+                    <span className="text-2xl">🇴🇲</span>
+                    <div>
+                      <h4 className="text-xs font-bold text-foreground">Oman Mandate Profile</h4>
+                      <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                        <span className="text-primary font-bold">{stats.om.mandatory}</span> Mandatory / <span className="font-semibold text-foreground">{stats.om.total}</span> Total Elements
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Country & Requirement Filtering Controls */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-white/[0.02] border border-border/30 p-3 rounded-xl">
                   {/* Country switcher */}
@@ -571,6 +464,28 @@ validateInvoice();`,
                   </div>
                 </div>
 
+                {/* Category Selector Controls */}
+                <div className="space-y-1">
+                  <span className="text-[8px] uppercase font-mono tracking-wider text-muted-foreground block font-bold flex items-center gap-1">
+                    <Layers className="w-3 h-3 text-primary" /> Group by Category
+                  </span>
+                  <div className="flex flex-wrap gap-1.5 font-mono">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setActiveCategory(cat)}
+                        className={`px-2.5 py-1 rounded-md text-[9px] font-bold border transition-all ${
+                          activeCategory === cat
+                            ? 'bg-primary/15 border-primary/30 text-primary font-black'
+                            : 'bg-black/20 border-border/20 text-muted-foreground hover:text-foreground hover:bg-black/40'
+                        }`}
+                      >
+                        {cat === 'all' ? 'All Categories' : cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Dictionary List Display */}
                 <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
                   {filteredItems.length === 0 ? (
@@ -609,7 +524,12 @@ validateInvoice();`,
                           </div>
 
                           <div className="space-y-1">
-                            <h4 className="text-[11px] font-bold text-foreground">{item.name}</h4>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[8px] uppercase font-mono text-muted-foreground px-1.5 py-0.5 rounded bg-white/[0.04]">
+                                {item.category}
+                              </span>
+                              <h4 className="text-[11px] font-bold text-foreground">{item.name}</h4>
+                            </div>
                             <p className="text-xs text-muted-foreground leading-normal">{itemRule}</p>
                           </div>
                         </div>
